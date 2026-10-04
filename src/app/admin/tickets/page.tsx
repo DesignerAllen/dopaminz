@@ -7,6 +7,8 @@ import { loadNotice } from "@/lib/status-data";
 import PageHeader from "@/components/PageHeader";
 import AdminTicketList from "@/components/AdminTicketList";
 
+export const metadata = { title: "크루권 관리" };
+
 // 관리자: 크루권 신청 목록과 입금 여부 체크(센터·지점·금액 설정은 설정 > 크루권)
 export default async function AdminTicketsPage() {
   await requireAdmin();

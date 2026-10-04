@@ -15,14 +15,14 @@ type Props = { params: Promise<{ id: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const n = await loadNotice((await params).id);
   // 미노출 공지는 제목·내용을 메타 태그로도 내보내지 않는다
-  if (!n || n.status !== "노출") return { title: "공지사항 · 도파민즈 크루" };
-  const title = `${n.title} · 도파민즈 크루`;
+  if (!n || n.status !== "노출") return { title: "공지사항" };
+  const title = n.title;
   const description = excerpt(n.content, 100);
   return {
     title,
     description,
-    openGraph: { type: "article", siteName: "도파민즈 크루", locale: "ko_KR", title, description, publishedTime: n.created_at, modifiedTime: n.updated_at ?? undefined, url: `/notices/${noticeKey(n)}` },
-    twitter: { card: "summary", title, description },
+    openGraph: { type: "article", siteName: "도파민즈 크루", locale: "ko_KR", title, description, images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "도파민즈 크루" }], publishedTime: n.created_at, modifiedTime: n.updated_at ?? undefined, url: `/notices/${noticeKey(n)}` },
+    twitter: { card: "summary_large_image", title, description, images: ["/twitter-image"] },
     alternates: { canonical: `/notices/${noticeKey(n)}` },
   };
 }

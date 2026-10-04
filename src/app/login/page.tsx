@@ -3,6 +3,8 @@ import { readSession } from "@/lib/session";
 import { currentVersion } from "@/lib/guard";
 import PinPad from "@/components/PinPad";
 
+export const metadata = { title: "비밀번호 입력" };
+
 /** 로그인 후 돌아갈 내부 경로만 허용한다(열린 리다이렉트 방지) */
 function safeNext(n: string | undefined): string {
   return n && /^\/(?!\/)[\w\-\/.%]*$/.test(n) ? n : "/";

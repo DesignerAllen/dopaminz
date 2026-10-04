@@ -4,6 +4,8 @@ import { requireViewer } from "@/lib/guard";
 import { excerpt, formatDate, loadNotices, noticeKey } from "@/lib/notices";
 import PageHeader from "@/components/PageHeader";
 
+export const metadata = { title: "공지사항" };
+
 // 공지사항 목록 (고정 공지 먼저, 그다음 최신순)
 export default async function NoticesPage() {
   await requireViewer("/notices", { adminTo: "/admin/notices" });

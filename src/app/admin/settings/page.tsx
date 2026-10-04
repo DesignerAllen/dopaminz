@@ -5,6 +5,8 @@ import { loadCatalog, loadPasses, loadRequests } from "@/lib/tickets";
 import { usedByPass } from "@/lib/ticket-passes";
 import SettingsForms from "@/components/SettingsForms";
 
+export const metadata = { title: "관리자 설정" };
+
 // S-07 관리자 설정: 공지, 뷰어 비밀번호, 관리자 비밀번호
 export default async function SettingsPage() {
   await requireAdmin();

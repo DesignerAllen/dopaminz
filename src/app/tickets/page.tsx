@@ -10,6 +10,8 @@ import TicketIntro from "@/components/TicketIntro";
 import TicketList from "@/components/TicketList";
 import { Button } from "@/components/ui/button";
 
+export const metadata = { title: "크루권 신청" };
+
 // 크루권 신청 내역(최신순)과 납부/미납, 금액. 여기서 신청 화면으로 이동한다.
 export default async function TicketsPage() {
   await requireViewer("/tickets", { adminTo: "/admin/tickets" });
