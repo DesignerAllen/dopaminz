@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { requireAdmin } from "@/lib/guard";
-import { isUuid, loadNotice } from "@/lib/notices";
+import { isNoticeKey, loadNotice } from "@/lib/notices";
 import { Button } from "@/components/ui/button";
 import PageHeader from "@/components/PageHeader";
 import NoticeArticle from "@/components/NoticeArticle";
@@ -10,7 +10,7 @@ import NoticeArticle from "@/components/NoticeArticle";
 export default async function AdminNoticeDetailPage({ params }: { params: Promise<{ id: string }> }) {
   await requireAdmin();
   const { id } = await params;
-  if (!isUuid(id)) notFound();
+  if (!isNoticeKey(id)) notFound();
   const n = await loadNotice(id);
   if (!n) notFound();
   return (

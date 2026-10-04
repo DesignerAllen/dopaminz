@@ -3,7 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { currentVersion } from "@/lib/guard";
 import { readSession, isAdmin } from "@/lib/session";
-import { excerpt, isUuid, loadNotice } from "@/lib/notices";
+import { excerpt, isNoticeKey, loadNotice, noticeKey } from "@/lib/notices";
 import { Button } from "@/components/ui/button";
 import PageHeader from "@/components/PageHeader";
 import NoticeArticle from "@/components/NoticeArticle";
@@ -21,15 +21,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
-    openGraph: { type: "article", siteName: "도파민즈 크루", locale: "ko_KR", title, description, publishedTime: n.created_at, modifiedTime: n.updated_at ?? undefined, url: `/notices/${n.id}` },
+    openGraph: { type: "article", siteName: "도파민즈 크루", locale: "ko_KR", title, description, publishedTime: n.created_at, modifiedTime: n.updated_at ?? undefined, url: `/notices/${noticeKey(n)}` },
     twitter: { card: "summary", title, description },
-    alternates: { canonical: `/notices/${n.id}` },
+    alternates: { canonical: `/notices/${noticeKey(n)}` },
   };
 }
 
 export default async function NoticeDetailPage({ params }: Props) {
   const { id } = await params;
-  if (!isUuid(id)) notFound();
+  if (!isNoticeKey(id)) notFound();
   const path = `/notices/${id}`;
 
   // 미리보기 크롤러를 위해 서버 리다이렉트 대신 화면에서 로그인으로 보낸다(메타 태그는 위에서 이미 만들어짐)

@@ -2,8 +2,8 @@ import "server-only";
 import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
 
-const COOKIE = "dc_session";
-const VIEWER_TTL_SEC = 60 * 60 * 24 * 7; // 뷰어 세션 7일
+import { SESSION_COOKIE as COOKIE, VIEWER_TTL_SEC } from "./session-config";
+
 export const ADMIN_IDLE_MS = 30 * 60 * 1000; // 관리자 30분 무활동 시 뷰어로 복귀
 
 export type Session = {

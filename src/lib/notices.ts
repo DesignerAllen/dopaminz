@@ -2,16 +2,21 @@ import "server-only";
 import { db } from "./supabase";
 
 export type NoticeStatus = "노출" | "미노출";
-export type Notice = { id: string; title: string; content: string; created_at: string; updated_at: string | null; status: NoticeStatus; pinned: boolean };
+export type Notice = { id: string; no: number | null; title: string; content: string; created_at: string; updated_at: string | null; status: NoticeStatus; pinned: boolean };
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 export const isUuid = (s: string) => UUID.test(s);
+/** 공유 링크에 쓰는 짧은 번호(숫자). 0012 마이그레이션 전에는 없다 */
+export const isNoticeNo = (s: string) => /^\d{1,9}$/.test(s);
+export const isNoticeKey = (s: string) => isNoticeNo(s) || isUuid(s);
+/** 주소에 넣는 값: 번호가 있으면 번호, 없으면 uuid */
+export const noticeKey = (n: Pick<Notice, "id" | "no">) => String(n.no ?? n.id);
 
 /** 테이블이 아직 없으면(0004 마이그레이션 전) 빈 목록으로 취급한다 */
 const missingTable = (e: { code?: string } | null) => e?.code === "42P01" || e?.code === "PGRST205";
 
 /** status 컬럼(0005 마이그레이션) 적용 전에는 모든 공지를 '노출'로 본다 */
-const normalize = (row: Record<string, unknown>): Notice => ({ ...(row as Omit<Notice, "status" | "pinned">), status: row.status === "미노출" ? "미노출" : "노출", pinned: row.pinned === true });
+const normalize = (row: Record<string, unknown>): Notice => ({ ...(row as Omit<Notice, "status" | "pinned" | "no">), no: typeof row.no === "number" ? row.no : row.no != null ? Number(row.no) : null, status: row.status === "미노출" ? "미노출" : "노출", pinned: row.pinned === true });
 
 /** 뷰어는 '노출' 공지만, 관리자(includeHidden)는 전부 */
 export async function loadNotices(includeHidden = false): Promise<{ notices: Notice[]; ready: boolean }> {
@@ -26,11 +31,11 @@ export async function loadNotices(includeHidden = false): Promise<{ notices: Not
 }
 
 /** 미노출 공지도 돌려준다. 보여줄지는 호출한 쪽(관리자 여부)이 정한다. */
-export async function loadNotice(id: string): Promise<Notice | null> {
-  if (!isUuid(id)) return null;
-  const { data, error } = await db().from("announcements").select("*").eq("id", id).maybeSingle();
+export async function loadNotice(key: string): Promise<Notice | null> {
+  if (!isNoticeKey(key)) return null;
+  const { data, error } = await db().from("announcements").select("*").eq(isNoticeNo(key) ? "no" : "id", isNoticeNo(key) ? Number(key) : key).maybeSingle();
   if (error) {
-    if (missingTable(error)) return null;
+    if (missingTable(error) || error.code === "42703") return null; // 번호 칸(0012) 전에는 번호 링크가 없다
     throw error;
   }
   return data ? normalize(data as Record<string, unknown>) : null;

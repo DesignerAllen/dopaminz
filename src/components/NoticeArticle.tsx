@@ -38,7 +38,7 @@ export default function NoticeArticle({ n, showShare = false }: { n: Notice; sho
         </div>
         <Separator className="my-4" />
         <Body text={n.content} />
-        {showShare && <ShareBar title={n.title} text={excerpt(n.content, 100)} path={`/notices/${n.id}`} />}
+        {showShare && <ShareBar title={n.title} text={excerpt(n.content, 100)} path={`/notices/${n.no ?? n.id}`} />}
       </article>
     </>
   );
