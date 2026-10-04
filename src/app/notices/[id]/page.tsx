@@ -21,8 +21,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
-    openGraph: { type: "article", siteName: "도파민즈 크루", locale: "ko_KR", title, description, images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "도파민즈 크루" }], publishedTime: n.created_at, modifiedTime: n.updated_at ?? undefined, url: `/notices/${noticeKey(n)}` },
-    twitter: { card: "summary_large_image", title, description, images: ["/twitter-image"] },
+    openGraph: { type: "article", siteName: "도파민즈 크루", locale: "ko_KR", title, description, images: [{ url: "/og.png", width: 1200, height: 630, alt: "도파민즈 크루" }], publishedTime: n.created_at, modifiedTime: n.updated_at ?? undefined, url: `/notices/${noticeKey(n)}` },
+    twitter: { card: "summary_large_image", title, description, images: ["/og.png"] },
     alternates: { canonical: `/notices/${noticeKey(n)}` },
   };
 }

@@ -4,7 +4,6 @@ import { loadActivePaymentsAll, loadAllMembers } from "@/lib/status-data";
 import PageHeader from "@/components/PageHeader";
 import MemberManager from "@/components/MemberManager";
 
-export const metadata = { title: "회원 관리" };
 
 // S-06 관리자 모드: 회원 등록·수정, 상태 관리, 미노출 회원(사유별)
 export default async function AdminPage() {

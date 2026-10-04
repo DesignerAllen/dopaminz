@@ -17,7 +17,9 @@ export const metadata: Metadata = {
   // 공유 링크 미리보기(og:url 등)의 절대 주소 기준. 배포 후 SITE_URL 환경변수로 실제 주소를 지정한다.
   metadataBase: new URL(process.env.SITE_URL ?? "http://localhost:3000"),
   title: "도파민즈 크루",
-  description: "도파민즈 크루 회비 납부 현황",
+  description: "도파민즈 크루 전용 페이지입니다",
+  openGraph: { type: "website", siteName: "도파민즈 크루", locale: "ko_KR", title: "도파민즈 크루", description: "도파민즈 크루 전용 페이지입니다", images: [{ url: "/og.png", width: 1200, height: 630, alt: "도파민즈 크루" }] },
+  twitter: { card: "summary_large_image", title: "도파민즈 크루", description: "도파민즈 크루 전용 페이지입니다", images: ["/og.png"] },
   robots: { index: false, follow: false },
 };
 

@@ -3,7 +3,6 @@ import { formatDate, loadNotices } from "@/lib/notices";
 import PageHeader from "@/components/PageHeader";
 import NoticeManager from "@/components/NoticeManager";
 
-export const metadata = { title: "공지 관리" };
 
 // 관리자: 공지사항 작성·수정
 export default async function AdminNoticesPage() {

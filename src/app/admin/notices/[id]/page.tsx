@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import PageHeader from "@/components/PageHeader";
 import NoticeArticle from "@/components/NoticeArticle";
 
-export const metadata = { title: "공지 미리보기" };
 
 // 관리자: 공지 미리보기(미노출 공지 포함). 크루원 화면으로 나가지 않고 관리 영역 안에서 본다.
 export default async function AdminNoticeDetailPage({ params }: { params: Promise<{ id: string }> }) {
