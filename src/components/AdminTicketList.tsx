@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import TicketExportDialog from "./TicketExportDialog";
 import { breakdown, dotDate, paidInfo, won } from "@/lib/ticket-calc";
 import type { TicketRequest } from "@/lib/tickets";
 
@@ -66,10 +67,13 @@ export default function AdminTicketList({ requests, ready, centers }: { requests
 
       <div className="mt-3">{bar}</div>
 
-      <label className="mt-2 flex min-h-8 w-fit cursor-pointer items-center gap-2 text-sm">
-        <Checkbox className="size-5" checked={onlyUnpaid} onCheckedChange={(v) => setOnlyUnpaid(v === true)} />
-        미납만 보기
-      </label>
+      <div className="mt-2 flex items-center justify-between gap-2">
+        <label className="flex min-h-8 w-fit cursor-pointer items-center gap-2 text-sm">
+          <Checkbox className="size-5" checked={onlyUnpaid} onCheckedChange={(v) => setOnlyUnpaid(v === true)} />
+          미납만 보기
+        </label>
+        <TicketExportDialog requests={requests} />
+      </div>
 
       {list.length === 0 ? (
         <p className="mt-3 rounded-[10px] border bg-card p-8 text-center text-sm text-muted-foreground">
