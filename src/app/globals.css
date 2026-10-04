@@ -1,0 +1,184 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* 다크 모드는 쓰지 않는다: .dark 클래스가 붙을 때만 dark: 스타일이 적용된다(기기의 다크 설정을 따라가지 않음) */
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* ── 겹침 순서(z-index) 체계 — 숫자를 직접 쓰지 말고 이 변수를 쓴다.
+     콘텐츠 안 고정 요소 < 검색 드롭다운 < 화면 머리글 < 모달 < 토스트 ── */
+  --z-namecol: 2;         /* 이름 칼럼(좌측 고정) */
+  --z-sticky-sum: 3;      /* 표의 합계 줄 */
+  --z-sticky-head: 4;     /* 표의 월/이름 머리글 */
+  --z-range: 6;           /* 범위(2026년 10~12월) 줄 */
+  --z-search: 20;         /* 검색 입력과 드롭다운 */
+  --z-page-head: 40;      /* 관리자 바 · 제목줄 · 탭, 홈 제목줄 (콘텐츠 위에 항상) */
+  --z-overlay: 100;       /* 모달 배경 */
+  --z-toast: 110;         /* 토스트 */
+
+  /* ── 머리글 높이(고정 영역 쌓임 계산): 관리자 모드 = 관리자 바 + 제목줄 + 탭 ── */
+  --h-adminbar: 40px;
+  --h-subbar: 52px;
+  --h-tabs: 48px;
+  --stick-viewer: var(--h-subbar);
+  --stick-admin: calc(var(--h-adminbar) + var(--h-subbar) + var(--h-tabs));
+
+  /* ── 앱에서 쓰는 별칭: 전부 shadcn 중립 테마를 따라간다(초록 계열 없음) ── */
+  --ground: var(--background);
+  --outer: var(--muted);
+  --ink: var(--foreground);
+  --fg-muted: var(--muted-foreground);
+  --muted-strong: oklch(0.371 0 0);
+  --brand: var(--primary);
+  --brand-dark: var(--primary);
+  --key-border: var(--border);
+  --key-active: var(--accent);
+  --error: var(--destructive);
+
+  /* ── shadcn 기본 테마: baseColor "neutral" (무채색) ── */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+  --radius: 0.625rem;
+}
+/* 기본 초기화는 Tailwind(preflight)가 맡는다. 여기서는 앱 바탕만 정한다. */
+html, body { background: var(--outer); color: var(--ink); line-height: 1.45; font-weight: 400; }
+/* 굵은 글씨는 Bold(700)가 아니라 SemiBold(600)로 통일 */
+b, strong { font-weight: 600; }
+
+.shell { min-height: 100vh; min-height: 100dvh; max-width: 480px; margin: 0 auto; background: var(--ground); display: flex; flex-direction: column; }
+
+/* ── 납부 현황 표(고정 머리글 · 좌측 이름 칼럼 · 3개월 캐러셀)와 납부 상태 칸 ──
+   shadcn 컴포넌트로 만들기 어려운 맞춤 레이아웃이라 CSS 로 둔다. */
+.cell { min-height: 44px; border-radius: 10px; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 3px; border: 1px solid transparent; }
+.cell.paid { background: #ddf0e6; color: #0b5a44; }
+.cell.exception { background: #e4e6fb; color: #2e3190; }
+.cell.unpaid { background: #fce3d6; color: #8a2f0b; }
+.cell.free { color: var(--muted-foreground); font-weight: 400; }
+.cell.upcoming { background: var(--muted); color: var(--muted-strong); font-weight: 400; }
+.cell.na { color: var(--muted-foreground); font-weight: 400; }
+.cell.editable { cursor: pointer; width: 100%; background-clip: padding-box; box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--ring); }
+.cell.warn { background: #fff1b8; color: #5e4100; }
+
+/* 월별 현황(표): 왼쪽 이름 칼럼 고정 + 오른쪽 월 칼럼만 캐러셀 */
+.search-wrap { padding: 24px 16px 12px; position: relative; z-index: var(--z-search); }
+/* 범위 줄도 고정(관리자 바 아래). 높이 56px = --rb */
+.range-bar { position: sticky; top: var(--stick-viewer); z-index: var(--z-range); height: 56px; background: var(--ground); display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 12px 0 16px; border-bottom: 1px solid var(--border); }
+.range-bar.admin { top: var(--stick-admin); }
+.range { font-size: 15px; font-weight: 600; }
+.rbtns { display: flex; gap: 8px; }
+.btn.qbtn:disabled { opacity: 0.4; }
+.mgrid { display: flex; align-items: flex-start; border-top: 1px solid var(--border); background: var(--card); --stick: var(--stick-viewer); --hh: 40px; --sh: 32px; --rh: 44px; --rb: 56px; border-top: 0; }
+.mgrid.admin { --stick: var(--stick-admin); }
+.namecol { flex: 0 0 124px; width: 124px; background: var(--card); border-right: 1px solid var(--border); position: relative; z-index: var(--z-namecol); }
+.carousel { flex: 1; min-width: 0; overflow-x: clip; touch-action: pan-y; user-select: none; -webkit-user-select: none; outline-offset: -2px; }
+.track { display: flex; width: 100%; transition: transform .28s cubic-bezier(.2,.8,.2,1); will-change: transform; }
+.track.dragging { transition: none; }
+@media (prefers-reduced-motion: reduce) { .track { transition: none; } }
+.panel { flex: 0 0 100%; min-width: 0; }
+/* 머리글·합계 줄은 세로 스크롤 시 고정 (이름 칼럼과 월 칼럼 모두 같은 높이) */
+.hcell, .mhrow { position: sticky; top: calc(var(--stick) + var(--rb)); z-index: var(--z-sticky-head); height: var(--hh); background: var(--muted); border-bottom: 1px solid var(--border); box-shadow: 0 -20px 0 0 var(--muted); /* 고정됐을 때 위쪽 틈으로 내용이 비쳐 보이지 않게 위로 색을 채운다 */ }
+.sumcell, .msrow { position: sticky; top: calc(var(--stick) + var(--rb) + var(--hh)); z-index: var(--z-sticky-sum); height: var(--sh); background: oklch(0.985 0 0); border-bottom: 1px solid var(--border); }
+.hcell { display: flex; align-items: center; padding-left: 12px; font-size: 12px; font-weight: 600; color: var(--muted-strong); }
+.nrow { height: var(--rh); display: flex; align-items: center; gap: 5px; padding-left: 12px; padding-right: 4px; font-size: 14px; font-weight: 600; border-top: 1px solid var(--border); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mrow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; align-items: center; height: var(--rh); padding: 0 12px 0 4px; border-top: 1px solid var(--border); }
+.mrow.mhrow, .mrow.msrow { height: var(--hh); border-top: 0; }
+.mrow.msrow { height: var(--sh); }
+.mgrid .cell { min-height: 34px; font-size: 12px; border-radius: 8px; }
+.mgrid .cell.editable { min-height: 38px; }
+.mhead { display: flex; align-items: center; justify-content: center; gap: 4px; text-align: center; font-size: 12px; font-weight: 600; color: var(--muted-strong); }
+.mhead[aria-current] { color: var(--brand); }
+.sum1 { text-align: center; font-size: 12px; font-weight: 600; white-space: nowrap; }
+
+/* 인원별: 현황과 같은 표 UI (년월 | 납부 여부) */
+.ptable { margin-top: 12px; border-top: 1px solid var(--border); background: var(--card); --stick: var(--stick-viewer); }
+.ptable.admin { --stick: var(--stick-admin); }
+.prow { display: grid; grid-template-columns: 112px minmax(0, 1fr); align-items: center; height: 44px; border-top: 1px solid var(--border); }
+.prow.phead { position: sticky; top: var(--stick); z-index: var(--z-sticky-head); height: 40px; border-top: 0; background: var(--muted); border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 600; color: var(--muted-strong); }
+.prow .ym { padding-left: 12px; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 6px; border-right: 1px solid var(--border); height: 100%; }
+.prow .ym.cur { color: var(--brand); }
+.prow .pc { padding: 0 12px 0 4px; }
+.prow.phead .ym { font-size: 12px; color: var(--muted-strong); }
+.prow.phead .pc { text-align: center; padding: 0 12px 0 4px; }
+.ptable .cell { min-height: 34px; font-size: 12px; border-radius: 8px; }
+.ptable .cell.editable { min-height: 38px; }
+a.nrow { color: inherit; text-decoration: none; }
+a.nrow:active { background: var(--accent); }
+
+@theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+@layer base {
+  * { @apply border-border outline-ring/50; }
+  body { @apply bg-background text-foreground; }
+  html { @apply font-sans; }
+}

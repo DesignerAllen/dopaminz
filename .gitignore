@@ -1,0 +1,10 @@
+node_modules
+.next
+.env.local
+next-env.d.ts
+*.tsbuildinfo
+
+# 실제 회원 개인정보(이름·인스타·납부/크루권 이력) — 저장소에 올리지 않음
+scripts/data/
+scripts/members-import.csv
+scripts/build-members-csv.py
