@@ -5,7 +5,7 @@
 - S-02 분기별 현황 `/status` · S-03 인원별 `/status/person` · S-04 회원 목록 `/members`
 - S-06 관리자 모드 `/admin`(회원 등록·수정·상태·미노출 사유별 목록·경고) · S-07 설정 `/admin/settings`
 - 관리자 모드에서 S-02/S-03 의 칸을 눌러 납부 체크·해제(해제 시 확인), 가입달은 "예외 납부 모드"로 체크
-- 변경 이력(`audit_log`), 관리자 30분 무활동 자동 종료, F-12 이력 이관 스크립트(`npm run import-payments -- 파일.csv --dry`)
+- 변경 이력(`audit_log`), 관리자 모드는 7일 세션(접속 시 갱신) 동안 자동 유지(무활동 자동 종료 없음), F-12 이력 이관 스크립트(`npm run import-payments -- 파일.csv --dry`)
 
 ## 실행
 1. Supabase 프로젝트를 만들고 SQL Editor에서 `supabase/migrations/0001_init.sql` 실행

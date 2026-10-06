@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { breakdown, dotDate, paidInfo, won } from "@/lib/ticket-calc";
+import { activePeople, breakdown, canceledPeople, dotDate, paidInfo, won } from "@/lib/ticket-calc";
 import type { TicketRequest } from "@/lib/tickets";
 
 /** 납부 상태 배지: 취소됨 / 납부(전원) / 일부 납부(n/m) / 미납 */
@@ -16,8 +16,15 @@ export function StatusBadge({ r }: { r: Pick<TicketRequest, "status" | "people">
 export default function RequestCard({ r, actions, admin = false }: { r: TicketRequest; actions?: React.ReactNode; admin?: boolean }) {
   const canceled = r.status === "canceled";
   const info = paidInfo(r);
-  const paid = r.people.filter((p) => p.paid);
-  const unpaid = r.people.filter((p) => !p.paid);
+  const people = activePeople(r);
+  const paid = people.filter((p) => p.paid);
+  const unpaid = people.filter((p) => !p.paid);
+  const canceledList = canceledPeople(r);
+  const rows = canceled
+    ? [["신청 인원", r.people]] as const
+    : canceledList.length > 0
+      ? [["납부 인원", paid], ["미납 인원", unpaid], ["취소 인원", canceledList]] as const
+      : [["납부 인원", paid], ["미납 인원", unpaid]] as const;
   return (
     <li className="rounded-[10px] border bg-card p-3.5">
       <div className="flex items-center justify-between gap-2">
@@ -30,10 +37,10 @@ export default function RequestCard({ r, actions, admin = false }: { r: TicketRe
           {admin && <span className="text-[13px] font-normal text-muted-foreground">{r.item_name}</span>}
         </div>
         <dl className="mt-2 grid gap-1.5 text-[13px] leading-snug">
-          {(canceled ? [["신청 인원", r.people]] as const : [["납부 인원", paid], ["미납 인원", unpaid]] as const).map(([label, list]) => (
+          {rows.map(([label, list]) => (
             <div key={label} className="flex gap-3">
               <dt className="w-[52px] flex-none text-muted-foreground">{label}</dt>
-              <dd className="min-w-0 flex-1 break-keep text-foreground/80">{list.length > 0 ? list.map((p) => p.name).join(", ") : "-"}</dd>
+              <dd className={cn("min-w-0 flex-1 break-keep text-foreground/80", label === "취소 인원" && "text-muted-foreground line-through")}>{list.length > 0 ? list.map((p) => p.name).join(", ") : "-"}</dd>
             </div>
           ))}
         </dl>
@@ -41,7 +48,10 @@ export default function RequestCard({ r, actions, admin = false }: { r: TicketRe
           <>
             <div className="mt-2 flex items-baseline justify-between gap-2">
               <span className="text-xs text-muted-foreground">{breakdown(r)}</span>
-              <span className={cn("text-base font-semibold", canceled && "line-through")}>{won(r.total_price)}</span>
+              <span className="flex items-baseline gap-1.5">
+                {!canceled && canceledList.length > 0 && <span className="text-xs text-muted-foreground line-through">{won(r.total_price)}</span>}
+                <span className={cn("text-base font-semibold", canceled && "line-through")}>{won(canceled ? r.total_price : info.totalAmount)}</span>
+              </span>
             </div>
             {!canceled && info.partial && (
               <p className="mt-1 text-right text-xs text-muted-foreground">납부 {won(info.paidAmount)} · 남은 금액 {won(info.unpaidAmount)}</p>

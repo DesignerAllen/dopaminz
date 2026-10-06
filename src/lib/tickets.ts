@@ -5,7 +5,8 @@ import { db } from "./supabase";
 export type TicketItem = { id: number; center_id: number; name: string; price: number; guest_price: number | null; sort_order: number; is_active: boolean };
 export type TicketBranch = { id: number; center_id: number; name: string; sort_order: number; is_active: boolean };
 export type TicketCenter = { id: number; name: string; entry_code: string | null; sort_order: number; is_active: boolean; branches: TicketBranch[]; items: TicketItem[] };
-export type TicketPerson = { id: number; position: number; member_id: number | null; name: string; is_guest: boolean; unit_price: number; paid: boolean };
+/** canceled_at: 이용자별 취소 시각(취소 안 됐으면 null). 취소된 이용자는 납부·금액·잔여 횟수 계산에서 빠진다. */
+export type TicketPerson = { id: number; position: number; member_id: number | null; name: string; is_guest: boolean; unit_price: number; paid: boolean; canceled_at: string | null };
 export type TicketPass = { id: number; center_id: number; start_date: string; end_date: string; quantity: number };
 export type TicketRequest = {
   id: number;
@@ -55,18 +56,20 @@ export async function loadCatalog(includeInactive = false): Promise<{ centers: T
   return { centers, ready: true };
 }
 
-type RawPerson = { id: number; position: number; member_id: number | null; name: string; is_guest: boolean; unit_price?: number | null; paid?: boolean | null };
+type RawPerson = { id: number; position: number; member_id: number | null; name: string; is_guest: boolean; unit_price?: number | null; paid?: boolean | null; canceled_at?: string | null };
 type RawRequest = Omit<TicketRequest, "people" | "guest_unit_price" | "member_count" | "guest_count"> & {
   guest_unit_price?: number | null; member_count?: number | null; guest_count?: number | null;
   ticket_request_people: RawPerson[];
 };
 
-/** 신청 내역: 사용일 최신순(같은 날은 늦게 신청한 순). 0009 마이그레이션 전의 옛 구조도 같은 모양으로 맞춰 준다. */
+/** 신청 내역: 사용일 최신순(같은 날은 늦게 신청한 순). 0009·0013 마이그레이션 전의 옛 구조도 같은 모양으로 맞춰 준다. */
 export async function loadRequests(limit = 500): Promise<{ requests: TicketRequest[]; ready: boolean }> {
   const run = (cols: string) =>
     db().from("ticket_requests").select(`*, ticket_request_people(${cols})`).order("used_on", { ascending: false }).order("created_at", { ascending: false }).limit(limit);
-  let { data, error } = await run("id, position, member_id, name, is_guest, unit_price, paid");
-  if (error && (error.code === "42703" || error.code === "PGRST204" || /column/.test(error.message ?? ""))) ({ data, error } = await run("id, position, member_id, name, is_guest"));
+  const missingColumn = (e: { code?: string; message?: string } | null) => !!e && (e.code === "42703" || e.code === "PGRST204" || /column/.test(e.message ?? ""));
+  let { data, error } = await run("id, position, member_id, name, is_guest, unit_price, paid, canceled_at");
+  if (missingColumn(error)) ({ data, error } = await run("id, position, member_id, name, is_guest, unit_price, paid"));
+  if (missingColumn(error)) ({ data, error } = await run("id, position, member_id, name, is_guest"));
   if (error) {
     if (missingTable(error)) return { requests: [], ready: false };
     throw error;
@@ -75,7 +78,12 @@ export async function loadRequests(limit = 500): Promise<{ requests: TicketReque
     const guestPrice = r.guest_unit_price ?? r.unit_price;
     const people: TicketPerson[] = [...(ticket_request_people ?? [])]
       .sort((a, b) => a.position - b.position)
-      .map((p) => ({ id: p.id, position: p.position, member_id: p.member_id, name: p.name, is_guest: p.is_guest, unit_price: p.unit_price ?? (p.is_guest ? guestPrice : r.unit_price), paid: p.paid ?? r.paid }));
+      .map((p) => ({
+        id: p.id, position: p.position, member_id: p.member_id, name: p.name, is_guest: p.is_guest,
+        unit_price: p.unit_price ?? (p.is_guest ? guestPrice : r.unit_price), paid: p.paid ?? r.paid,
+        // 0013 전에는 신청 단위 취소만 있었으므로 신청이 취소됐으면 이용자도 취소로 본다
+        canceled_at: p.canceled_at ?? (r.status === "canceled" ? (r.canceled_at ?? r.created_at) : null),
+      }));
     const guests = people.filter((p) => p.is_guest).length;
     return {
       ...r,

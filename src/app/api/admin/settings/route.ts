@@ -64,7 +64,7 @@ export async function POST(req: Request) {
     let { error } = await db().from("settings").update({ ...patch, viewer_pin_display: pin }).eq("id", 1);
     if (error?.code === "42703" || error?.code === "PGRST204") ({ error } = await db().from("settings").update(patch).eq("id", 1));
     if (error) return bad("저장하지 못했어요", 500);
-    await writeSession({ ver, adminUntil: auth.session.adminUntil });
+    await writeSession({ ver, admin: true });
     await audit("settings.viewerPin");
     return NextResponse.json({ ok: true });
   }

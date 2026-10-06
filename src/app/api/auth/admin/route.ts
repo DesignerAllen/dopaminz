@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { clientIp, compare, loadSecrets, lockState, recordAttempt } from "@/lib/auth";
-import { ADMIN_IDLE_MS, readSession, writeSession } from "@/lib/session";
+import { readSession, writeSession } from "@/lib/session";
 
 export async function POST(req: Request) {
   const body = (await req.json().catch(() => null)) as { password?: unknown } | null;
@@ -20,7 +20,7 @@ export async function POST(req: Request) {
   await recordAttempt("admin", ip, ok);
 
   if (ok) {
-    await writeSession({ ver: session.ver, adminUntil: Date.now() + ADMIN_IDLE_MS });
+    await writeSession({ ver: session.ver, admin: true });
     return NextResponse.json({ ok: true });
   }
   return NextResponse.json({ ok: false }, { status: 401 });
