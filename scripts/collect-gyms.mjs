@@ -1,7 +1,7 @@
 // 카카오 로컬 API(키워드 검색)로 전국 클라이밍센터를 수집해 docs/data/climbing-gyms-kakao.csv 로 저장한다.
 // 사용: node --env-file=.env.local scripts/collect-gyms.mjs   (필요: KAKAO_REST_API_KEY)
 // 열: 권역,시도,지역,암장명,출처,검수상태,주소,카카오ID,볼더링추정  (앞 6열은 build-gyms.mjs 와 동일)
-import { writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 
 const KEY = process.env.KAKAO_REST_API_KEY;
 if (!KEY) throw new Error("KAKAO_REST_API_KEY 가 없습니다 (.env.local)");
@@ -26,7 +26,7 @@ const AREAS = {
   제주: "제주시 서귀포시",
 };
 const KEYWORDS = ["클라이밍", "볼더링"];
-const EXCLUDE = /스포츠|^더월클라이밍|^디스커버리 클라임스퀘어|춘클릿지|인어바위|비밀기지|빙벽|아이스|빙장|암장|암벽|용소빙장|아카데미|센터|실내|몽키즈|시소|연구소|써니사이드|경기장|인공암벽장|암벽오르기|공원|협회|연맹|산악회|산악문화|학교|대학|초등|중학|고등|등산학교|스포츠센터$|체육관$/;
+const EXCLUDE = /^(홍대클라이밍|오름클라이밍|썬클라이밍짐|온세대클라이밍|창원클라이밍스쿨|클라임러버|클라임웍스|기필코홀드|일산SK클라이밍|오름놀터|전주바위오름|목포탑매드클라임동호회|오르자|천당릿지|블랙야크 야크돔|콜스에듀케이션|역삼클라이밍랩|쿠키즈클라이밍|맥클라이밍|위클리클라이밍|산타클라이밍짐|볼더클라이밍짐|서종국클라이밍짐|테키클라이밍|잼클라이밍|안산선부클라이밍|클라이밍 트리클|클럽클라이밍|화성클라이밍클럽)$|^(플래시볼더스|키클 클라이밍|SO클라이밍짐)|^홍종열클라이밍짐|스포츠|^더월클라이밍|^디스커버리 클라임스퀘어|춘클릿지|인어바위|비밀기지|빙벽|아이스|빙장|암장|암벽|용소빙장|아카데미|센터|실내|몽키즈|시소|연구소|써니사이드|경기장|인공암벽장|암벽오르기|공원|협회|연맹|산악회|산악문화|학교|대학|초등|중학|고등|등산학교|스포츠센터$|체육관$/;
 const BOULDER = /볼더|boulder/i;
 
 // 카카오 주소의 시도 표기(강원특별자치도, 전남광주통합특별시 등)를 AREAS 키로 맞춘다.
@@ -80,9 +80,18 @@ const rows = [...found.values()]
   .filter((r) => !EXCLUDE.test(r.name))
   .sort((a, b) => Object.keys(AREAS).indexOf(a.sido) - Object.keys(AREAS).indexOf(b.sido) || a.area.localeCompare(b.area, "ko") || a.name.localeCompare(b.name, "ko"));
 
-const head = "권역,시도,지역,암장명,출처,검수상태,주소,카카오ID,볼더링추정";
-const lines = rows.map((r) => [regionOf(r.sido), r.sido, r.area, r.name, "카카오 로컬 API", "미검수", r.addr.replace(/,/g, " "), r.id, BOULDER.test(r.name) ? "Y" : ""].join(","));
+// 다시 수집해도 손으로 정한 가중치가 사라지지 않게, 기존 CSV 의 카카오ID → 가중치를 이어받는다
 const out = new URL("../docs/data/climbing-gyms-kakao.csv", import.meta.url);
+const weights = new Map();
+if (existsSync(out)) {
+  const [h, ...old] = readFileSync(out, "utf8").replace(/^\uFEFF/, "").split(/\r?\n/).filter(Boolean);
+  const cols = h.split(",");
+  const [iId, iW] = [cols.indexOf("카카오ID"), cols.indexOf("가중치")];
+  if (iId >= 0 && iW >= 0) for (const l of old) { const f = l.split(","); weights.set(f[iId], f[iW]); }
+}
+
+const head = "권역,시도,지역,암장명,출처,검수상태,주소,카카오ID,볼더링추정,가중치";
+const lines = rows.map((r) => [regionOf(r.sido), r.sido, r.area, r.name, "카카오 로컬 API", "미검수", r.addr.replace(/,/g, " "), r.id, BOULDER.test(r.name) ? "Y" : "", weights.get(r.id) ?? "1"].join(","));
 writeFileSync(out, "﻿" + [head, ...lines].join("\n") + "\n");
 
 const count = (f) => rows.filter(f).length;

@@ -1,5 +1,5 @@
 // docs/data/climbing-gyms-kakao.csv → src/lib/gyms.ts 생성. CSV 를 갱신한 뒤 `npm run build-gyms` 로 다시 만든다.
-// 열은 헤더 이름으로 읽는다(권역·시도·지역·암장명 필수, 주소 선택). 권역: 서울 / 수도권 / 수도권외
+// 열은 헤더 이름으로 읽는다(권역·시도·지역·암장명 필수, 주소·가중치 선택. 가중치: 1=기본, 1.5=1.5배 더 잘 나옴). 권역: 서울 / 수도권 / 수도권외
 import { readFileSync, writeFileSync } from "node:fs";
 
 const REGION = { 서울: "seoul", 수도권: "metro", 수도권외: "etc" };
@@ -21,18 +21,20 @@ for (const line of rows) {
   const f = line.split(",").map((s) => s.trim());
   const [권역, 시도, 지역, 암장명] = [f[col.권역], f[col.시도], f[col.지역], f[col.암장명]];
   const address = col.주소 === undefined ? "" : f[col.주소];
+  const weight = col.가중치 === undefined ? 1 : Number(f[col.가중치] || 1);
+  if (!(weight > 0)) { console.warn("가중치 오류:", line); continue; }
   const region = REGION[권역];
   if (!region || !암장명) { console.warn("건너뜀:", line); continue; }
   const id = `${region}-${hash(region + 암장명)}`;
   if (seen.has(id)) { console.warn("중복:", 암장명); continue; }
   seen.add(id);
-  gyms.push({ id, name: 암장명, region, area: 시도 === 지역 ? 시도 : `${시도} ${지역}`, ...(address ? { address } : {}) });
+  gyms.push({ id, name: 암장명, region, area: 시도 === 지역 ? 시도 : `${시도} ${지역}`, ...(address ? { address } : {}), ...(weight !== 1 ? { weight } : {}) });
 }
 
 const body = gyms.map((g) => `  ${JSON.stringify(g)},`).join("\n");
 writeFileSync(out, `// 자동 생성 파일 — 직접 수정하지 말고 docs/data/climbing-gyms-kakao.csv 를 고친 뒤 \`npm run build-gyms\` 를 실행하세요.
 export type GymRegion = "seoul" | "metro" | "etc";
-export type Gym = { id: string; name: string; region: GymRegion; area: string; address?: string };
+export type Gym = { id: string; name: string; region: GymRegion; area: string; address?: string; weight?: number /* 뽑힐 확률 가중치(없으면 1) */ };
 
 export const REGIONS: { value: GymRegion; label: string }[] = [
   { value: "seoul", label: "서울권" },

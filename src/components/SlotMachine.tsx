@@ -19,6 +19,13 @@ const STRIP_LEN = 36; // 회전 중 지나가는 칸 수(마지막 칸이 당첨
 
 export type SlotState = "idle" | "spinning" | "stopped";
 
+/** 가중치(weight, 기본 1)에 비례해 한 곳을 뽑는다. 예: 1.5 는 1 보다 1.5배 더 잘 나온다. */
+function pickWeighted(pool: Gym[]): Gym {
+  let r = Math.random() * pool.reduce((sum, g) => sum + (g.weight ?? 1), 0);
+  for (const g of pool) { r -= g.weight ?? 1; if (r < 0) return g; }
+  return pool[pool.length - 1];
+}
+
 const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 
 /** 슬롯머신: 일러스트 배경 위에 가운데 릴 창을 얹은 컴포넌트. 레버(클릭·키보드)를 당기면
@@ -49,7 +56,7 @@ export default function SlotMachine({ pool, disabled, onSpinStart, onResult }: {
 
   const spin = useCallback(() => {
     if (stateRef.current === "spinning" || pool.length === 0) return;
-    const winner = pool[Math.floor(Math.random() * pool.length)]; // 정지 전에 결과 확정
+    const winner = pickWeighted(pool); // 정지 전에 결과 확정(가중치 반영)
     // 지나가는 칸: 같은 암장이 연달아 나오지 않게 채우고 마지막 칸이 당첨
     const items: Gym[] = [];
     for (let i = 0; i < STRIP_LEN - 1; i++) {
