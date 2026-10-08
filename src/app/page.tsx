@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Settings2 } from "lucide-react";
+import { Dices, Settings2 } from "lucide-react";
 import { requireViewer } from "@/lib/guard";
 import { loadActiveMembers } from "@/lib/status-data";
 import LogoutButton from "@/components/LogoutButton";
@@ -25,7 +25,12 @@ export default async function HomePage() {
         <MenuCard href="/notices" title="공지사항" caption="크루 규정 및 공지사항을 확인하세요." />
         <MenuCard href="/members" title={`${members.length}명의 크루원이 있어요!`} caption="명단과 인스타그램 ID를 확인할 수 있어요." />
         <MenuCard href="/status" title="회비 납부 현황" caption="매달 회비 납부현황을 확인하세요." />
-        <MenuCard href="/tickets" title="크루권 신청" caption="서울숲, 손상원에서 사용할 수 있어요" />
+        <div className="flex flex-col gap-2">
+          <MenuCard href="/tickets" title="크루권 신청" caption="서울숲, 손상원에서 사용할 수 있어요" />
+          <Button asChild variant="outline" size="sm" className="self-center">
+            <Link href="/gym-roulette"><Dices data-icon="inline-start" />암장 룰렛</Link>
+          </Button>
+        </div>
       </main>
       <footer className="mt-auto flex justify-center p-4">
         <LogoutButton />
