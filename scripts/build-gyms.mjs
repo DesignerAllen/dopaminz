@@ -1,5 +1,5 @@
 // docs/data/climbing-gyms-kakao.csv → src/lib/gyms.ts 생성. CSV 를 갱신한 뒤 `npm run build-gyms` 로 다시 만든다.
-// 열은 헤더 이름으로 읽는다(권역·시도·지역·암장명 필수, 주소·가중치 선택. 가중치: 1=기본, 1.5=1.5배 더 잘 나옴). 권역: 서울 / 수도권 / 수도권외
+// 열은 헤더 이름으로 읽는다(권역·시도·지역·암장명 필수, 주소·가중치 선택. 가중치: 1=기본, 2=2배 더 잘 나옴). 권역: 서울 / 수도권 / 수도권외
 import { readFileSync, writeFileSync } from "node:fs";
 
 const REGION = { 서울: "seoul", 수도권: "metro", 수도권외: "etc" };
