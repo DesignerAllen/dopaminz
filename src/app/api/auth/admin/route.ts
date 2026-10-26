@@ -20,7 +20,7 @@ export async function POST(req: Request) {
   await recordAttempt("admin", ip, ok);
 
   if (ok) {
-    await writeSession({ ver: session.ver, admin: true });
+    await writeSession({ ver: session.ver, mid: session.mid, admin: true });
     return NextResponse.json({ ok: true });
   }
   return NextResponse.json({ ok: false }, { status: 401 });

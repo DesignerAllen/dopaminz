@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import { headers } from "next/headers";
 import { db } from "./supabase";
 
-export type Scope = "viewer" | "admin";
+export type Scope = "viewer" | "admin" | "member";
 
 const WINDOW_MS = 10 * 60 * 1000;
 const IP_LIMIT = 20; // 같은 IP에서 10분 내 최대 시도 횟수(과도한 자동 대입 방지용 안전장치)

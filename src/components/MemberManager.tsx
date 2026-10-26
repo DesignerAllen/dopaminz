@@ -15,7 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { DEFAULT_SORT, sortMembers, type SortKey } from "@/lib/member-sort";
 
-type M = { id: number; name: string; joined_at: string; instagram_id: string | null; hidden_reason: string | null; hidden_at: string | null };
+type M = { id: number; name: string; joined_at: string; instagram_id: string | null; hidden_reason: string | null; hidden_at: string | null; mate: string | null };
 const REASONS = ["자진 탈퇴", "경고 탈퇴", "기타"] as const;
 
 // 모달에서 편집 중인 값. id 가 없으면 신규 등록.
@@ -80,6 +80,19 @@ export default function MemberManager({ active, hidden, warnings, today }: { act
     }
   }
 
+  async function resetPin() {
+    if (!draft?.id || !window.confirm(`${draft.name}님의 개인 비밀번호를 초기화할까요?\n통합 로그인 비밀번호와 같은 값으로 바뀌고, 클메이트 결과는 유지돼요.`)) return;
+    setBusy(true);
+    try {
+      const res = await fetch(`/api/admin/members/${draft.id}/pin`, { method: "DELETE" });
+      if (res.status === 401) return router.replace("/admin/login");
+      if (!res.ok) return setErr("초기화하지 못했어요");
+      toast.success(`${draft.name}님의 개인 비밀번호를 초기화했어요`);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <div className="px-4 pt-3 pb-10">
       {warnings.length > 0 && (
@@ -103,7 +116,7 @@ export default function MemberManager({ active, hidden, warnings, today }: { act
         {shownActive.map((m) => (
           <li key={m.id} className="flex min-h-15 items-center gap-2 px-3 py-2">
             <div className="min-w-0 flex-1">
-              <div className="text-[15px] font-semibold">{m.name}</div>
+              <div className="text-[15px] font-semibold">{m.name}{m.mate && <span className="ml-1.5 rounded-full bg-secondary px-2 py-0.5 align-middle text-xs font-medium text-foreground/80">{m.mate}</span>}</div>
               <div className="text-xs text-muted-foreground">가입 {m.joined_at}{m.instagram_id ? ` · @${m.instagram_id}` : ""}</div>
             </div>
             <Button variant="outline" size="sm" className="h-11" onClick={() => openEdit(m, false)}>수정</Button>
@@ -123,7 +136,7 @@ export default function MemberManager({ active, hidden, warnings, today }: { act
               {items.map((m) => (
                 <li key={m.id} className="flex min-h-14 items-center gap-2 px-3 py-2">
                   <div className="min-w-0 flex-1">
-                    <div className="text-[15px] font-semibold">{m.name}</div>
+                    <div className="text-[15px] font-semibold">{m.name}{m.mate && <span className="ml-1.5 rounded-full bg-secondary px-2 py-0.5 align-middle text-xs font-medium text-foreground/80">{m.mate}</span>}</div>
                     <div className="text-xs text-muted-foreground">가입 {m.joined_at} · 미노출일 {m.hidden_at ?? "-"}</div>
                   </div>
                   <Button variant="outline" size="sm" className="h-11" onClick={() => openEdit(m, true)}>수정</Button>
@@ -190,6 +203,10 @@ export default function MemberManager({ active, hidden, warnings, today }: { act
                       </>
                     )}
                   </>
+                )}
+
+                {draft.id && !draft.wasHidden && (
+                  <Button variant="outline" className="w-full" disabled={busy} onClick={resetPin}>개인 비밀번호 초기화</Button>
                 )}
 
                 {err && <p className="text-[13px] font-normal text-destructive" role="status">{err}</p>}

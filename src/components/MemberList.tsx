@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { ExternalLink, Info } from "lucide-react";
 import MemberCombobox from "./MemberCombobox";
 import SortSelect from "./SortSelect";
@@ -8,7 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { DEFAULT_SORT, sortMembers, type SortKey } from "@/lib/member-sort";
 
-type M = { id: number; name: string; joined_at: string; instagram_id: string | null };
+type M = { id: number; name: string; joined_at: string; instagram_id: string | null; mate: string | null };
 
 const NEW_DAYS = 30; // 가입 후 30일까지는 신규 크루원
 
@@ -47,7 +48,14 @@ export default function MemberList({ members, today }: { members: M[]; today: st
             <li key={m.id} className="flex min-h-14 items-center gap-2.5 px-3.5 py-2.5">
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-1.5 text-[15px] font-semibold">
-                  {m.name}
+                  {m.mate ? (
+                    <Link href={`/climbmate/result/${m.id}?from=members`} className="flex min-h-11 items-center gap-1.5">
+                      {m.name}
+                      <span className="rounded-full bg-secondary px-2 py-0.5 text-xs font-medium text-foreground/80">{m.mate}</span>
+                    </Link>
+                  ) : (
+                    m.name
+                  )}
                   {days <= NEW_DAYS && <Badge aria-label="신규 크루원" title="신규 크루원" className="size-[18px] justify-center rounded-[5px] p-0 text-[11px] font-semibold">N</Badge>}
                 </div>
                 <div className="text-xs text-muted-foreground">가입한지 {days}일 ({m.joined_at})</div>

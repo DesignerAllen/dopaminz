@@ -17,7 +17,7 @@ export async function proxy(req: NextRequest) {
     const age = Math.floor(Date.now() / 1000) - (payload.iat ?? 0);
     if (age < REFRESH_AFTER_SEC && !legacy) return res;
     const admin = payload.admin === true || (typeof payload.adminUntil === "number" && payload.adminUntil > Date.now());
-    const fresh = await new SignJWT({ ver: payload.ver, ...(admin ? { admin: true, ...(payload.adminOff === true ? { adminOff: true } : {}) } : {}) })
+    const fresh = await new SignJWT({ ver: payload.ver, ...(typeof payload.mid === "number" ? { mid: payload.mid } : {}), ...(admin ? { admin: true, ...(payload.adminOff === true ? { adminOff: true } : {}) } : {}) })
       .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()
       .setExpirationTime(`${VIEWER_TTL_SEC}s`)

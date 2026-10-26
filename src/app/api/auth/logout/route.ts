@@ -7,8 +7,8 @@ import { clearSession, readSession, writeSession } from "@/lib/session";
 export async function POST(req: Request) {
   const body = (await req.json().catch(() => null)) as { adminOnly?: unknown; adminLogout?: unknown } | null;
   const session = await readSession();
-  if (body?.adminLogout === true && session) await writeSession({ ver: session.ver });
-  else if (body?.adminOnly === true && session) await writeSession(session.admin ? { ver: session.ver, admin: true, adminOff: true } : { ver: session.ver });
+  if (body?.adminLogout === true && session) await writeSession({ ver: session.ver, mid: session.mid });
+  else if (body?.adminOnly === true && session) await writeSession(session.admin ? { ver: session.ver, mid: session.mid, admin: true, adminOff: true } : { ver: session.ver, mid: session.mid });
   else await clearSession();
   return NextResponse.json({ ok: true });
 }

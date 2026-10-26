@@ -1,4 +1,6 @@
 import { requireViewer } from "@/lib/guard";
+import { loadTypeKeys } from "@/lib/climb-data";
+import { findType } from "@/lib/climbmate";
 import { loadActiveMembers } from "@/lib/status-data";
 import PageHeader from "@/components/PageHeader";
 import { todayKst } from "@/lib/payment-rules";
@@ -10,7 +12,8 @@ export const metadata = { title: "크루원 목록" };
 export default async function MembersPage() {
   await requireViewer("/members", { adminTo: "/admin/members" });
   const admin = false;
-  const members = await loadActiveMembers();
+  const [rows, types] = await Promise.all([loadActiveMembers(), loadTypeKeys()]);
+  const members = rows.map((m) => ({ ...m, mate: findType(types.get(m.id) ?? "")?.alias ?? null }));
   return (
     <>
       <PageHeader title="크루원 목록" admin={admin} active={null} />
