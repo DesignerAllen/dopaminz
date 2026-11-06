@@ -27,7 +27,7 @@ export default function ClimbTest() {
       });
       if (res.status === 401) return router.replace("/climbmate/start");
       if (!res.ok) throw new Error("save");
-      router.replace("/climbmate/me"); // 이동하는 동안 저장 중 화면을 유지한다
+      router.replace("/climbmate/me", { transitionTypes: ["nav-forward"] }); // 이동하는 동안 저장 중 화면을 유지한다
       router.refresh();
     } catch (e) {
       setErr(e instanceof Error && e.message === "save" ? "결과를 저장하지 못했어요. 다시 시도해 주세요" : "네트워크 오류가 발생했어요. 다시 시도해 주세요");

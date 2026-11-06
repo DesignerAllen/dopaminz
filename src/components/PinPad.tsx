@@ -48,7 +48,7 @@ export default function PinPad({ next = "/", members = [] }: { next?: string; me
       const data = await res.json().catch(() => ({}));
       if (res.ok) {
         if (person) rememberMember(person.id);
-        router.replace(person ? "/" : next); // 개인 로그인은 항상 메인 페이지로
+        router.replace(person ? "/" : next, { transitionTypes: ["nav-forward"] }); // 개인 로그인은 항상 메인 페이지로
         router.refresh();
         return;
       }

@@ -46,7 +46,7 @@ export default function ChangePin() {
       });
       if (res.ok) {
         toast.success("비밀번호를 바꿨어요");
-        router.replace("/settings");
+        router.replace("/settings", { transitionTypes: ["nav-back"] });
         router.refresh();
         return;
       }

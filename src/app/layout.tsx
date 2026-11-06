@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export const viewport: Viewport = { width: "device-width", initialScale: 1 };
+export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#ffffff" };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   // 로컬 개발 전용 [케이스] 버튼: 운영 빌드에서는 이 분기가 통째로 제거되어 번들에 포함되지 않는다

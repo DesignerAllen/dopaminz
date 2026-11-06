@@ -26,7 +26,7 @@ export default function AdminLoginForm() {
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok) {
-        router.replace("/admin");
+        router.replace("/admin", { transitionTypes: ["nav-forward"] });
         router.refresh();
         return;
       }
@@ -60,7 +60,7 @@ export default function AdminLoginForm() {
         <Input id="admin-pw" type="password" autoComplete="off" placeholder="영문 + 숫자 + 특수기호" value={password} onChange={(e) => setPassword(e.target.value)} disabled={locked} />
         <div className="min-h-[22px] text-[13px] font-normal text-destructive" role="status">{msg}</div>
         <div className="flex gap-2.5">
-          <Button asChild variant="outline" className="flex-1"><Link href="/">취소</Link></Button>
+          <Button asChild variant="outline" className="flex-1"><Link href="/" transitionTypes={["nav-back"]}>취소</Link></Button>
           <Button type="submit" disabled={busy || locked || !password} className="flex-[2]">관리자 모드 진입</Button>
         </div>
       </form>

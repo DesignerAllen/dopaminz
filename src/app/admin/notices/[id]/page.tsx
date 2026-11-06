@@ -19,7 +19,7 @@ export default async function AdminNoticeDetailPage({ params }: { params: Promis
       <PageHeader title="공지 미리보기" admin active="notices" back="/admin/notices" />
       <NoticeArticle n={n} showShare />
       <div className="px-4 pb-8">
-        <Button asChild variant="outline" className="w-full"><Link href="/admin/notices">목록으로</Link></Button>
+        <Button asChild variant="outline" className="w-full"><Link href="/admin/notices" transitionTypes={["nav-back"]}>목록으로</Link></Button>
       </div>
     </>
   );

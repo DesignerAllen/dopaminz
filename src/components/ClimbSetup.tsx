@@ -56,7 +56,7 @@ export default function ClimbSetup({ members, next = "/climbmate/test" }: { memb
       });
       if (res.ok) {
         rememberMember(person.id);
-        router.replace(next);
+        router.replace(next, { transitionTypes: ["nav-forward"] });
         router.refresh();
         return;
       }

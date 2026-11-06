@@ -38,7 +38,7 @@ export default async function SharedClimbResultPage({ params, searchParams }: Pr
       <PageHeader title="클메이트 결과" admin={false} back={from === "members" ? "/members" : "/"} />
       <main className="flex flex-1 flex-col gap-5 px-5 pt-3 pb-7">
         <ClimbResult axes={r.profile.axes} owner={r.name} crewNames={namesByType(crew, r.profile.member_id)} />
-        <Button asChild className="h-12 text-base"><Link href="/climbmate">나도 해보기</Link></Button>
+        <Button asChild className="h-12 text-base"><Link href="/climbmate" transitionTypes={["nav-forward"]}>나도 해보기</Link></Button>
       </main>
     </>
   );

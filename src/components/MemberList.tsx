@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { ExternalLink, Info } from "lucide-react";
 import MemberCombobox from "./MemberCombobox";
 import SortSelect from "./SortSelect";
-import { Badge, ListRow, press } from "./tds";
+import { Badge, press } from "./tds";
 import { DEFAULT_SORT, sortMembers, type SortKey } from "@/lib/member-sort";
 
 type M = { id: number; name: string; joined_at: string; instagram_id: string | null; mate: string | null };
@@ -40,31 +41,29 @@ export default function MemberList({ members, today }: { members: M[]; today: st
       <ul className="pb-6">
         {list.map((m) => {
           const days = daysSince(m.joined_at, today);
-          const name = (
-            <span className="flex flex-wrap items-center gap-1.5 text-[17px] leading-[25.5px] font-semibold text-[#191f28]">
-              {m.name}
-              {m.mate && <Badge size="small" color="elephant" variant="weak">{m.mate}</Badge>}
-              {days <= NEW_DAYS && <Badge size="xsmall" color="red" variant="fill">N</Badge>}
-            </span>
+          const body = (
+            <>
+              <span className="flex flex-wrap items-center gap-1.5 text-[17px] leading-[25.5px] font-semibold text-[#191f28]">
+                {m.name}
+                {m.mate && <Badge size="small" color="elephant" variant="weak">{m.mate}</Badge>}
+                {days <= NEW_DAYS && <Badge size="xsmall" color="red" variant="fill">N</Badge>}
+              </span>
+              <span className="block text-[13px] leading-[19.5px] text-[#6b7684]">가입한지 {days}일 ({m.joined_at})</span>
+            </>
           );
+          // 링크(<a>) 안에 링크를 넣을 수 없으므로, 클메이트 결과 링크와 인스타그램 링크를 나란히 둔다
           return (
-            <li key={m.id}>
-              <ListRow
-                href={m.mate ? `/climbmate/result/${m.id}?from=members` : undefined}
-                contents={
-                  <>
-                    {name}
-                    <span className="block text-[13px] leading-[19.5px] text-[#6b7684]">가입한지 {days}일 ({m.joined_at})</span>
-                  </>
-                }
-                right={
-                  m.instagram_id ? (
-                    <a className={`-mr-2 flex min-h-10 items-center gap-1 rounded-lg px-2 text-[13px] text-[#4e5968] ${press}`} href={`https://instagram.com/${m.instagram_id}`} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>
-                      @{m.instagram_id} <ExternalLink className="size-3.5" />
-                    </a>
-                  ) : undefined
-                }
-              />
+            <li key={m.id} className="flex items-center gap-4 px-6 py-3">
+              {m.mate ? (
+                <Link href={`/climbmate/result/${m.id}?from=members`} transitionTypes={["nav-forward"]} className={`-mx-2 -my-1 min-w-0 flex-1 rounded-lg px-2 py-1 ${press}`}>{body}</Link>
+              ) : (
+                <span className="min-w-0 flex-1">{body}</span>
+              )}
+              {m.instagram_id && (
+                <a className={`-mr-2 flex min-h-10 flex-none items-center gap-1 rounded-lg px-2 text-[13px] text-[#4e5968] ${press}`} href={`https://instagram.com/${m.instagram_id}`} target="_blank" rel="noopener noreferrer">
+                  @{m.instagram_id} <ExternalLink className="size-3.5" />
+                </a>
+              )}
             </li>
           );
         })}

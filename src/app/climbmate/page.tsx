@@ -33,7 +33,7 @@ export default async function ClimbmatePage() {
         <p className="text-center text-[13px] text-muted-foreground">4가지 성향이 모여 16가지 유형 중 하나로 진단돼요</p>
 
         <div className="mt-auto flex flex-col gap-2.5">
-          <Button asChild className="h-12 text-base"><Link href="/climbmate/start">시작하기</Link></Button>
+          <Button asChild className="h-12 text-base"><Link href="/climbmate/start" transitionTypes={["nav-forward"]}>시작하기</Link></Button>
           <p className="text-center text-xs leading-relaxed text-muted-foreground">내 결과를 저장하려면 처음 한 번 크루원을 선택하고<br />개인 비밀번호를 등록해요. 다음부터는 로그인 화면에서 이름을 검색해 로그인해요.</p>
         </div>
       </main>

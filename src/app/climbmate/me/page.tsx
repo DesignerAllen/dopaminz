@@ -25,7 +25,7 @@ export default async function ClimbMePage() {
         <ClimbResult axes={me.axes} owner={name} crewNames={namesByType(crew, me.member_id)} />
         <div>
           <ShareResultButton title={`${name ? `${name}님은` : "나는"} ${findType(me.type_key)?.alias}`} path={`/climbmate/result/${me.member_id}`} />
-          <Button asChild variant="outline" className="mt-2 h-12 w-full text-base"><Link href="/climbmate/test">다시 검사하기</Link></Button>
+          <Button asChild variant="outline" className="mt-2 h-12 w-full text-base"><Link href="/climbmate/test" transitionTypes={["nav-forward"]}>다시 검사하기</Link></Button>
         </div>
       </main>
     </>

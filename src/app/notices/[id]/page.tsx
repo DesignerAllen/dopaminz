@@ -47,7 +47,7 @@ export default async function NoticeDetailPage({ params }: Props) {
       <PageHeader title="공지사항" admin={false} back="/notices" />
       <NoticeArticle n={n} />
       <div className="px-4 pb-8">
-        <Button asChild variant="outline" className="w-full"><Link href="/notices">목록으로</Link></Button>
+        <Button asChild variant="outline" className="w-full"><Link href="/notices" transitionTypes={["nav-back"]}>목록으로</Link></Button>
       </div>
     </>
   );

@@ -57,7 +57,7 @@ export function ListRow({ href, left, top, bottom, contents, right, withArrow = 
   );
   const cls = "flex items-center gap-4 px-6 py-3";
   return href ? (
-    <Link href={href} className={cn(cls, pressRow)}>{inner}</Link>
+    <Link href={href} transitionTypes={["nav-forward"]} className={cn(cls, pressRow)}>{inner}</Link>
   ) : (
     <div className={cls}>{inner}</div>
   );
