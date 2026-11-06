@@ -79,8 +79,8 @@ export default function AdminTicketList({ requests, ready, centers }: { requests
   return (
     <div className="px-4 pt-3 pb-10">
       <div className="grid grid-cols-2 gap-2.5">
-        <div className="rounded-[10px] bg-[#fce3d6] p-3 text-[#8a2f0b]"><div className="text-xs font-semibold">미납 {unpaidRequests.length}건</div><b className="text-lg font-semibold">{won(unpaidSum)}</b></div>
-        <div className="rounded-[10px] bg-[#ddf0e6] p-3 text-[#0b5a44]"><div className="text-xs font-semibold">납부 완료</div><b className="text-lg font-semibold">{won(paidSum)}</b></div>
+        <div className="rounded-xl bg-[#ffeeee] p-3 text-[#d22030]"><div className="text-xs font-semibold">미납 {unpaidRequests.length}건</div><b className="text-lg font-semibold">{won(unpaidSum)}</b></div>
+        <div className="rounded-xl bg-[#f0faf6] p-3 text-[#029359]"><div className="text-xs font-semibold">납부 완료</div><b className="text-lg font-semibold">{won(paidSum)}</b></div>
       </div>
 
       <div className="mt-3">{bar}</div>
@@ -94,7 +94,7 @@ export default function AdminTicketList({ requests, ready, centers }: { requests
       </div>
 
       {list.length === 0 ? (
-        <p className="mt-3 rounded-[10px] border bg-card p-8 text-center text-sm text-muted-foreground">
+        <p className="mt-3 rounded-2xl bg-secondary p-8 text-center text-sm text-muted-foreground">
           {!ready ? "크루권 기능을 준비하고 있어요 (0008 마이그레이션 필요)" : filtering ? "조건에 맞는 신청이 없어요" : onlyUnpaid ? "미납 신청이 없어요" : "신청 내역이 없어요"}
         </p>
       ) : (
@@ -136,7 +136,7 @@ export default function AdminTicketList({ requests, ready, centers }: { requests
                   </DialogDescription>
                 </DialogHeader>
 
-                <ul className="divide-y rounded-[10px] border">
+                <ul className="divide-y divide-border rounded-2xl bg-secondary">
                   {activePeople(managed).map((p) => (
                     <li key={p.id}>
                       <label className="flex min-h-14 cursor-pointer items-center gap-3 px-3 py-2">
@@ -160,7 +160,7 @@ export default function AdminTicketList({ requests, ready, centers }: { requests
                   ))}
                 </ul>
 
-                <div className="rounded-[10px] bg-muted px-3 py-2.5 text-sm">
+                <div className="rounded-xl bg-muted px-3 py-2.5 text-sm">
                   <div className="flex justify-between"><span className="text-muted-foreground">합계</span><b className="font-semibold">{won(i.totalAmount)}</b></div>
                   <div className="flex justify-between"><span className="text-muted-foreground">납부</span><span>{won(i.paidAmount)} ({i.paidCount}/{i.total}명)</span></div>
                   <div className="flex justify-between"><span className="text-muted-foreground">남은 금액</span><span>{won(i.unpaidAmount)}</span></div>
@@ -213,7 +213,7 @@ export default function AdminTicketList({ requests, ready, centers }: { requests
                       />
                       전체 선택 ({picked.length}/{people.length})
                     </label>
-                    <ul className="divide-y rounded-[10px] border">
+                    <ul className="divide-y divide-border rounded-2xl bg-secondary">
                       {people.map((p) => (
                         <li key={p.id}>
                           <label className="flex min-h-14 cursor-pointer items-center gap-3 px-3 py-2">
@@ -242,7 +242,7 @@ export default function AdminTicketList({ requests, ready, centers }: { requests
                 {done.length > 0 && (
                   <div>
                     <div className="px-3 pb-1 text-xs font-semibold text-muted-foreground">취소 내역 {done.length}명</div>
-                    <ul className="divide-y rounded-[10px] border bg-muted/50">
+                    <ul className="divide-y divide-border rounded-2xl bg-secondary">
                       {done.map((p) => (
                         <li key={p.id} className="flex min-h-11 items-center gap-3 px-3 py-1.5 text-sm text-muted-foreground">
                           <span className="min-w-0 flex-1 line-through">{p.name}{p.is_guest ? " (게스트)" : ""}</span>

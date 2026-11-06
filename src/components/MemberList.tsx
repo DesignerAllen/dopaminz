@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { ExternalLink, Info } from "lucide-react";
 import MemberCombobox from "./MemberCombobox";
 import SortSelect from "./SortSelect";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
+import { Badge, ListRow, press } from "./tds";
 import { DEFAULT_SORT, sortMembers, type SortKey } from "@/lib/member-sort";
 
 type M = { id: number; name: string; joined_at: string; instagram_id: string | null; mate: string | null };
@@ -30,45 +28,47 @@ export default function MemberList({ members, today }: { members: M[]; today: st
 
   return (
     <>
-      <Alert className="mx-4 mt-4 w-auto border-0 bg-accent text-accent-foreground">
-        <Info />
-        <AlertDescription className="text-sm leading-relaxed break-keep text-accent-foreground">
-          본인 인스타그램 ID를 추가하고 싶다면 운영진에게 알려주세요. 추가해드릴게요.
-        </AlertDescription>
-      </Alert>
+      <div className="mx-4 mt-4 flex items-start gap-2 rounded-2xl bg-[#f2f4f6] px-4 py-3 text-[13px] leading-[19.5px] break-keep text-[#4e5968]">
+        <Info className="mt-0.5 size-4 flex-none text-[#6b7684]" />
+        <p>설정에서 내 인스타그램 ID를 등록하면 여기에 표시돼요.</p>
+      </div>
       <div className="flex items-start gap-2 px-4 pt-4">
         <SortSelect value={sort} onChange={setSort} />
         <MemberCombobox options={members} selectedId={sel} onSelect={setSel} query={q} onQuery={setQ} />
       </div>
-      <div className="mx-4.5 mt-3 mb-2 text-[13px] text-muted-foreground">크루원 {list.length}명</div>
-      <ul className="mx-4 mb-8 divide-y overflow-hidden rounded-[10px] border bg-card">
+      <div className="px-6 pt-4 pb-1 text-[13px] leading-[19.5px] text-[#6b7684]">크루원 {list.length}명</div>
+      <ul className="pb-6">
         {list.map((m) => {
           const days = daysSince(m.joined_at, today);
+          const name = (
+            <span className="flex flex-wrap items-center gap-1.5 text-[17px] leading-[25.5px] font-semibold text-[#191f28]">
+              {m.name}
+              {m.mate && <Badge size="small" color="elephant" variant="weak">{m.mate}</Badge>}
+              {days <= NEW_DAYS && <Badge size="xsmall" color="red" variant="fill">N</Badge>}
+            </span>
+          );
           return (
-            <li key={m.id} className="flex min-h-14 items-center gap-2.5 px-3.5 py-2.5">
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-1.5 text-[15px] font-semibold">
-                  {m.mate ? (
-                    <Link href={`/climbmate/result/${m.id}?from=members`} className="flex min-h-11 items-center gap-1.5">
-                      {m.name}
-                      <span className="rounded-full bg-secondary px-2 py-0.5 text-xs font-medium text-foreground/80">{m.mate}</span>
-                    </Link>
-                  ) : (
-                    m.name
-                  )}
-                  {days <= NEW_DAYS && <Badge aria-label="신규 크루원" title="신규 크루원" className="size-[18px] justify-center rounded-[5px] p-0 text-[11px] font-semibold">N</Badge>}
-                </div>
-                <div className="text-xs text-muted-foreground">가입한지 {days}일 ({m.joined_at})</div>
-              </div>
-              {m.instagram_id && (
-                <a className="flex min-h-11 items-center gap-1 text-[13px] font-normal text-primary" href={`https://instagram.com/${m.instagram_id}`} target="_blank" rel="noopener noreferrer">
-                  @{m.instagram_id} <ExternalLink className="size-3.5" />
-                </a>
-              )}
+            <li key={m.id}>
+              <ListRow
+                href={m.mate ? `/climbmate/result/${m.id}?from=members` : undefined}
+                contents={
+                  <>
+                    {name}
+                    <span className="block text-[13px] leading-[19.5px] text-[#6b7684]">가입한지 {days}일 ({m.joined_at})</span>
+                  </>
+                }
+                right={
+                  m.instagram_id ? (
+                    <a className={`-mr-2 flex min-h-10 items-center gap-1 rounded-lg px-2 text-[13px] text-[#4e5968] ${press}`} href={`https://instagram.com/${m.instagram_id}`} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>
+                      @{m.instagram_id} <ExternalLink className="size-3.5" />
+                    </a>
+                  ) : undefined
+                }
+              />
             </li>
           );
         })}
-        {list.length === 0 && <li className="p-6 text-center text-sm text-muted-foreground">검색 결과가 없어요</li>}
+        {list.length === 0 && <li className="p-8 text-center text-[15px] text-[#6b7684]">검색 결과가 없어요</li>}
       </ul>
     </>
   );

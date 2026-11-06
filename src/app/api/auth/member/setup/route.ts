@@ -26,6 +26,7 @@ export async function POST(req: Request) {
     .is("pin_hash", null); // 동시에 두 명이 등록해도 먼저 된 쪽만 반영
   if (error) return NextResponse.json({ ok: false, error: "db" }, { status: 500 });
 
+  await db().from("members").update({ last_login_at: new Date().toISOString() }).eq("id", memberId); // 마지막 로그인 기록(0015 적용 전에는 컬럼이 없어 오류가 나도 무시)
   await writeSession({ ...auth.session, mid: memberId });
   return NextResponse.json({ ok: true });
 }

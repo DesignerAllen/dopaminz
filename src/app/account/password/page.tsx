@@ -11,7 +11,7 @@ export default async function ChangePasswordPage() {
   if (!s.mid) redirect("/");
   return (
     <>
-      <PageHeader title="비밀번호 변경" admin={false} back="/" />
+      <PageHeader title="비밀번호 변경" admin={false} back="/settings" />
       <ChangePin />
     </>
   );

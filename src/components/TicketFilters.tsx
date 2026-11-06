@@ -39,7 +39,7 @@ export function useTicketFilter(requests: TicketRequest[], centers: string[]) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => e.key === "Escape" && (e.target as HTMLInputElement).blur()}
-          className="h-11 rounded-[10px] bg-white pr-10 pl-9 text-base"
+          className="h-11 rounded-xl bg-white pr-10 pl-9 text-base"
         />
         {query && (
           <button type="button" aria-label="검색 초기화" onClick={() => setQuery("")} className="absolute top-1/2 right-1.5 flex size-8 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground">

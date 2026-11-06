@@ -27,11 +27,11 @@ export default function PageHeader({ title, admin, active = null, back }: { titl
       {admin && <AdminChrome />}
       <header className={cn("flex h-(--h-subbar) items-center gap-1 pr-4", backHref ? "pl-1" : "pl-4")}>
         {backHref && (
-          <Button asChild variant="ghost" size="icon" aria-label="뒤로">
+          <Button asChild variant="ghost" size="icon-lg" aria-label="뒤로" className="size-11 text-[#4e5968]">
             <Link href={backHref}><ChevronLeft className="size-6" /></Link>
           </Button>
         )}
-        <h1 className="text-lg font-semibold">{title}</h1>
+        <h1 className="text-[17px] leading-[25.5px] font-semibold text-[#191f28]">{title}</h1>
       </header>
       {admin && (
         <Tabs value={active ?? ""} className="px-4">

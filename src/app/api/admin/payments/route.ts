@@ -7,7 +7,7 @@ export async function POST(req: Request) {
   const auth = await requireAdminApi();
   if ("error" in auth) return auth.error;
 
-  const b = (await req.json().catch(() => null)) as { memberId?: unknown; ym?: unknown; action?: unknown; exception?: unknown } | null;
+  const b = (await req.json().catch(() => null)) as { memberId?: unknown; ym?: unknown; action?: unknown } | null;
   const memberId = typeof b?.memberId === "number" ? b.memberId : NaN;
   const ym = typeof b?.ym === "string" ? b.ym : "";
   if (!Number.isInteger(memberId) || !/^\d{4}-(0[1-9]|1[0-2])$/.test(ym) || ym < SERVICE_START) return bad("invalid");
@@ -25,14 +25,12 @@ export async function POST(req: Request) {
 
   const joinYm = String(member.joined_at).slice(0, 7);
   if (ym < joinYm) return bad("before_join");
-  // 가입달은 면제. 관리자가 '예외 납부'로만 체크할 수 있다.
-  if (ym === joinYm && b.exception !== true) return bad("exception_required");
-  const is_exception = ym === joinYm;
+  if (ym === joinYm) return bad("join_month_exempt"); // 가입달은 면제라 체크할 수 없다
 
   const { error } = await db()
     .from("payments")
-    .upsert({ member_id: memberId, year_month: ym, is_exception, paid_at: new Date().toISOString() }, { onConflict: "member_id,year_month" });
+    .upsert({ member_id: memberId, year_month: ym, paid_at: new Date().toISOString() }, { onConflict: "member_id,year_month" });
   if (error) return bad("db", 500);
-  await audit("payment.check", { member_id: memberId, year_month: ym, detail: { is_exception } });
-  return NextResponse.json({ ok: true, is_exception });
+  await audit("payment.check", { member_id: memberId, year_month: ym, });
+  return NextResponse.json({ ok: true });
 }

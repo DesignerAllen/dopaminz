@@ -24,7 +24,7 @@ export default async function ClimbmatePage() {
 
         <ul className="grid grid-cols-2 gap-2" aria-label="성향 4가지 축">
           {AXES.map((a) => (
-            <li key={a.name} className="rounded-[10px] border bg-card p-3">
+            <li key={a.name} className="rounded-2xl bg-secondary p-3">
               <div className="text-xs text-muted-foreground">{a.name}</div>
               <div className="mt-1 text-sm font-semibold">{a.left} <span className="font-normal text-muted-foreground">vs</span> {a.right}</div>
             </li>

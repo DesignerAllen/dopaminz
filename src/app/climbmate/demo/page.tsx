@@ -29,7 +29,7 @@ export default async function ClimbDemoPage() {
     <>
       <PageHeader title="예시 화면 (크루원 20명)" admin={false} back="/climbmate" />
       <main className="flex flex-1 flex-col gap-6 px-5 pt-3 pb-7">
-        <p className="rounded-[10px] bg-secondary p-3 text-xs leading-relaxed text-muted-foreground">가상의 크루원 20명이 결과를 저장한 상태를 가정한 예시예요. 실제 데이터가 아닙니다.</p>
+        <p className="rounded-xl bg-secondary p-3 text-xs leading-relaxed text-muted-foreground">가상의 크루원 20명이 결과를 저장한 상태를 가정한 예시예요. 실제 데이터가 아닙니다.</p>
         <ClimbResult axes={me.axes} crewNames={namesByType(crew, me.member_id)} />
         <section aria-label="예시 크루원 유형 분포" className="flex flex-col gap-2">
           <h3 className="text-sm font-semibold text-muted-foreground">예시 참여자 유형 분포 (나 포함 {crew.length}명)</h3>

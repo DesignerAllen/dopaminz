@@ -157,7 +157,7 @@ export default function MonthCarousel({ panels, curYm, defaultIndex, admin, pers
           {arrange(panels[0].rows).map((r) => (
             <Link key={r.id} href={`${personBase}?m=${r.id}`} className="nrow" aria-label={`${r.name} 납부 현황 보기${unpaidMonths.get(r.id) ? `, 미납 ${unpaidMonths.get(r.id)!.size}개월` : ""}`}>
               <span className="min-w-0 truncate">{r.name}</span>
-              {unpaidMonths.get(r.id) && <span className="flex-none text-[11px] font-normal text-[#8a2f0b]">미납{unpaidMonths.get(r.id)!.size}</span>}
+              {unpaidMonths.get(r.id) && <span className="flex-none text-[11px] font-normal text-[#d22030]">미납{unpaidMonths.get(r.id)!.size}</span>}
             </Link>
           ))}
         </div>
@@ -202,7 +202,7 @@ export default function MonthCarousel({ panels, curYm, defaultIndex, admin, pers
                   {p.sums.map((x, i) => {
                     const future = p.months[i] > curYm;
                     return (
-                      <div key={p.months[i]} className="sum1" style={{ color: !future && x.unpaid ? "#8a2f0b" : "var(--fg-muted)" }}>
+                      <div key={p.months[i]} className="sum1" style={{ color: !future && x.unpaid ? "#d22030" : "var(--fg-muted)" }}>
                         {future ? "-" : `미납 ${x.unpaid}명`}
                       </div>
                     );

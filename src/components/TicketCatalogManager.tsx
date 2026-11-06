@@ -89,7 +89,7 @@ export default function TicketCatalogManager({ centers, ready, passes }: { cente
   return (
     <div className="flex flex-col gap-3.5">
       {!ready && (
-        <p className="rounded-[10px] bg-amber-100 p-3 text-sm text-amber-950">크루권 저장소가 아직 없어요. Supabase에서 <b className="font-semibold">0008_tickets.sql</b>을 실행해 주세요.</p>
+        <p className="rounded-xl bg-amber-100 p-3 text-sm text-[#191f28]">크루권 저장소가 아직 없어요. Supabase에서 <b className="font-semibold">0008_tickets.sql</b>을 실행해 주세요.</p>
       )}
       <Button className="w-full" onClick={() => create("center")} disabled={!ready}><Plus /> 센터 추가</Button>
 

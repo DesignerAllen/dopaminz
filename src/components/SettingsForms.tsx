@@ -18,7 +18,7 @@ async function post(body: unknown): Promise<{ status: number; ok: boolean; error
   return { status: res.status, ok: res.ok, error: data.error };
 }
 
-const cardCls = "gap-0 rounded-[10px] py-4";
+const cardCls = "gap-0 rounded-xl py-4";
 
 /** 설정 화면: [계좌 설정] 탭(계좌번호 · 회비 · 크루권)과 [비밀번호] 탭 */
 export default function SettingsForms({ fee, account, due, viewerPin, centers, ticketsReady, passes }: { fee: string; account: string; due: string; viewerPin: string | null; centers: TicketCenter[]; ticketsReady: boolean; passes: PassView[] }) {

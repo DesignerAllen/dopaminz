@@ -13,7 +13,7 @@ export default function MenuCard({ href, title, caption }: { href?: string; titl
       <ChevronRight className={cn("size-5", href ? "text-primary" : "text-muted-foreground/60")} aria-hidden="true" />
     </>
   );
-  const base = "flex min-h-[72px] items-center gap-3 rounded-[10px] border px-4 py-3.5 text-left";
+  const base = "flex min-h-[72px] items-center gap-3 rounded-xl border px-4 py-3.5 text-left";
   return href ? (
     <Link href={href} className={cn(base, "bg-card transition-colors active:bg-secondary")}>{body}</Link>
   ) : (

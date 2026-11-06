@@ -8,13 +8,13 @@ import type { TicketRequest } from "@/lib/tickets";
 export default function TicketList({ requests, ready, centers }: { requests: TicketRequest[]; ready: boolean; centers: string[] }) {
   const { bar, filtered, active } = useTicketFilter(requests, centers);
   if (requests.length === 0) {
-    return <p className="mx-4 mt-4 rounded-[10px] border bg-card p-8 text-center text-sm text-muted-foreground">{ready ? "신청 내역이 없어요" : "크루권 기능을 준비하고 있어요"}</p>;
+    return <p className="p-8 text-center text-[15px] text-[#6b7684]">{ready ? "신청 내역이 없어요" : "크루권 기능을 준비하고 있어요"}</p>;
   }
   return (
     <>
       <div className="mx-4 mt-4">{bar}</div>
       {filtered.length === 0 ? (
-        <p className="mx-4 mt-3 rounded-[10px] border bg-card p-8 text-center text-sm text-muted-foreground">{active ? "조건에 맞는 신청이 없어요" : "신청 내역이 없어요"}</p>
+        <p className="p-8 text-center text-[15px] text-[#6b7684]">{active ? "조건에 맞는 신청이 없어요" : "신청 내역이 없어요"}</p>
       ) : (
         <ul className="mx-4 mt-3 flex flex-col gap-2.5">
           {filtered.map((r) => <RequestCard key={r.id} r={r} />)}

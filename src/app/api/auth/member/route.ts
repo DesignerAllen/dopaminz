@@ -23,6 +23,7 @@ export async function POST(req: Request) {
   if (!ok) return NextResponse.json({ ok: false }, { status: 401 });
 
   const secrets = await loadSecrets();
+  await db().from("members").update({ last_login_at: new Date().toISOString() }).eq("id", memberId); // 마지막 로그인 기록(0015 적용 전에는 컬럼이 없어 오류가 나도 무시)
   await writeSession({ ver: secrets.session_version, mid: memberId });
   return NextResponse.json({ ok: true });
 }

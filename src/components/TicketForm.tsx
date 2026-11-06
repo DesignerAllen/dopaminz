@@ -89,7 +89,7 @@ export default function TicketForm({ centers, members, today, account }: {
   }
 
   if (centers.length === 0) {
-    return <p className="mx-4 mt-4 rounded-[10px] border bg-card p-8 text-center text-sm text-muted-foreground">신청할 수 있는 센터가 아직 없어요. 운영진에게 문의해 주세요.</p>;
+    return <p className="mx-4 mt-4 rounded-2xl bg-secondary p-8 text-center text-sm text-muted-foreground">신청할 수 있는 센터가 아직 없어요. 운영진에게 문의해 주세요.</p>;
   }
 
   return (
@@ -120,7 +120,7 @@ export default function TicketForm({ centers, members, today, account }: {
         <Label>사용 구분</Label>
         <RadioGroup value={itemId ? String(itemId) : ""} onValueChange={(v) => setItemId(Number(v))} className="gap-2">
           {center?.items.map((i) => (
-            <label key={i.id} className="flex min-h-12 cursor-pointer items-center gap-3 rounded-[10px] border bg-card px-3 has-data-[state=checked]:border-primary has-data-[state=checked]:bg-accent">
+            <label key={i.id} className="flex min-h-12 cursor-pointer items-center gap-3 rounded-xl border bg-card px-3 has-data-[state=checked]:border-primary has-data-[state=checked]:bg-accent">
               <RadioGroupItem value={String(i.id)} />
               <span className="flex-1 text-sm font-semibold">{i.name}</span>
               <span className="text-right text-[13px] leading-snug text-muted-foreground">{priceText(i)}</span>
@@ -175,7 +175,7 @@ export default function TicketForm({ centers, members, today, account }: {
       </div>
 
       {/* 센터·지점 금액 요약 + 입금 계좌 (한 카드) */}
-      <div className="mt-5 grid gap-6 rounded-[10px] border bg-card p-4">
+      <div className="mt-5 grid gap-6 rounded-2xl bg-secondary p-4">
         <section aria-label="금액">
           <h2 className="text-base font-semibold">{center?.name}{branch ? ` ${branch.name}` : ""}</h2>
           <dl className="mt-3 grid gap-2 text-sm">

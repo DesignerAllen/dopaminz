@@ -54,15 +54,15 @@ export default function NoticeManager({ notices, ready }: { notices: N[]; ready:
   return (
     <div className="px-4 pt-3 pb-10">
       {!ready && (
-        <Alert className="mb-3 border-amber-300 bg-amber-100 text-amber-950">
+        <Alert className="mb-3 border-0 bg-[#fff9e7] text-[#191f28]">
           <TriangleAlert />
-          <AlertDescription className="text-amber-950">공지사항 저장소가 아직 없어요. Supabase에서 <b>0004_announcements.sql</b>을 실행해 주세요.</AlertDescription>
+          <AlertDescription className="text-[#191f28]">공지사항 저장소가 아직 없어요. Supabase에서 <b>0004_announcements.sql</b>을 실행해 주세요.</AlertDescription>
         </Alert>
       )}
       <Button className="w-full" onClick={() => setDraft({ id: null, title: "", content: "", status: "노출", pinned: false })}>+ 공지 작성</Button>
 
       <h2 className="mt-5 mb-2 px-0.5 text-base font-semibold">공지사항 <span className="text-sm font-normal text-muted-foreground">{notices.length}개</span></h2>
-      <ul className="divide-y overflow-hidden rounded-[10px] border bg-card">
+      <ul className="divide-y divide-border overflow-hidden rounded-2xl bg-secondary">
         {notices.map((n) => (
           <li key={n.id} className="flex min-h-16 items-center gap-2 px-3 py-2">
             <Link href={`/admin/notices/${n.id}`} className="min-w-0 flex-1">
@@ -106,7 +106,7 @@ export default function NoticeManager({ notices, ready }: { notices: N[]; ready:
                   </ToggleGroup>
                   <p className="text-xs text-muted-foreground">{draft.status === "노출" ? "크루원에게 공지로 보여요." : "크루원에게 보이지 않아요. 링크로도 열 수 없어요."}</p>
                 </div>
-                <label className="flex items-start gap-2.5 rounded-[10px] bg-accent p-2.5 text-[13px] leading-snug text-accent-foreground">
+                <label className="flex items-start gap-2.5 rounded-xl bg-accent p-2.5 text-[13px] leading-snug text-accent-foreground">
                   <Checkbox className="mt-0.5 size-5" checked={draft.pinned} onCheckedChange={(v) => setDraft({ ...draft, pinned: v === true })} />
                   <span><b>상단 고정</b> — 체크하면 공지 목록 맨 위에 고정돼요. 해제하면 작성일 순으로 돌아가요.</span>
                 </label>

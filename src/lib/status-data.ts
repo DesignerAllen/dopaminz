@@ -67,15 +67,16 @@ export async function loadMaxQuarter(currentQuarter: number): Promise<number> {
   return last ? Math.max(currentQuarter, quarterOf(last)) : currentQuarter;
 }
 
-export type FullMember = MemberRow & { status: "회원" | "미노출"; hidden_reason: string | null; hidden_at: string | null };
+export type FullMember = MemberRow & { status: "회원" | "미노출"; hidden_reason: string | null; hidden_at: string | null; last_login_at: string | null };
 
 export async function loadAllMembers(): Promise<FullMember[]> {
   // select("*"): 0003 마이그레이션(hidden_at) 적용 전에도 동작하도록 컬럼을 이름으로 고르지 않는다
   const { data, error } = await db().from("members").select("*").order("joined_at", { ascending: true }).order("name", { ascending: true });
   if (error) throw error;
-  return ((data ?? []) as (FullMember & { hidden_at?: string | null })[]).map((m) => ({
+  return ((data ?? []) as (FullMember & { hidden_at?: string | null; last_login_at?: string | null })[]).map((m) => ({
     id: m.id, name: m.name, joined_at: m.joined_at, instagram_id: m.instagram_id, status: m.status, hidden_reason: m.hidden_reason,
     hidden_at: m.hidden_at ?? null,
+    last_login_at: m.last_login_at ?? null, // 0015 마이그레이션 전에는 컬럼이 없어 null
   }));
 }
 

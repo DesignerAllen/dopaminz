@@ -54,7 +54,7 @@ export default function TicketIntro({ centers, account }: { centers: Center[]; a
             <DialogTitle>입장코드</DialogTitle>
             <DialogDescription>{WARNING}</DialogDescription>
           </DialogHeader>
-          <ul className="divide-y rounded-[10px] border">
+          <ul className="divide-y rounded-xl border">
             {withCode.map((c) => (
               <li key={c.id} className="px-3.5 py-3">
                 <div className="text-xs text-muted-foreground">{c.name}</div>

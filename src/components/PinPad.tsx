@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Delete } from "lucide-react";
 import MemberCombobox from "@/components/MemberCombobox";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { recalledMember, rememberMember } from "@/lib/last-member";
 
 type LoginMember = { id: number; name: string; hasPin: boolean };
 
@@ -21,6 +22,11 @@ export default function PinPad({ next = "/", members = [] }: { next?: string; me
   const [busy, setBusy] = useState(false);
   const [sel, setSel] = useState<number | null>(null);
   const [q, setQ] = useState("");
+  // 마지막으로 로그인한 크루원을 기억해 두었다가, 비밀번호가 등록된 사람이면 이름을 미리 선택해 둔다(X 로 지우면 공통 비밀번호 입력)
+  useEffect(() => {
+    const id = recalledMember();
+    if (id !== null && members.some((m) => m.id === id && m.hasPin)) setSel(id);
+  }, [members]);
   const person = members.find((m) => m.id === sel) ?? null;
   const noPin = !!person && !person.hasPin; // 아직 개인 비밀번호를 등록하지 않은 크루원
 
@@ -41,7 +47,8 @@ export default function PinPad({ next = "/", members = [] }: { next?: string; me
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok) {
-        router.replace(next);
+        if (person) rememberMember(person.id);
+        router.replace(person ? "/" : next); // 개인 로그인은 항상 메인 페이지로
         router.refresh();
         return;
       }
@@ -107,7 +114,7 @@ export default function PinPad({ next = "/", members = [] }: { next?: string; me
               disabled={locked || busy || noPin}
               aria-label={k === "del" ? "지우기" : k}
               onClick={() => press(k)}
-              className="h-16 rounded-[10px] border-0 bg-secondary text-2xl font-normal hover:bg-secondary active:bg-neutral-300"
+              className="h-16 rounded-xl border-0 bg-secondary text-2xl font-normal hover:bg-secondary active:bg-neutral-300"
             >
               {k === "del" ? <Delete className="size-6" /> : k}
             </Button>

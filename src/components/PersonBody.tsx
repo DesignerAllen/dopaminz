@@ -3,7 +3,7 @@ import { CircleCheck } from "lucide-react";
 import { loadActiveMembers, loadMemberPayments } from "@/lib/status-data";
 import MemberSelect from "./MemberSelect";
 import { Card, CardContent } from "@/components/ui/card";
-import { ExceptionToggle, PayCell, PayEditorProvider } from "./PayEditor";
+import { PayCell, PayEditorProvider } from "./PayEditor";
 
 /** 인원별 납부 현황. m: 선택한 회원 id(없으면 첫 번째), basePath: 회원을 바꿀 때 이동할 주소 */
 export default async function PersonBody({ admin, m, basePath }: { admin: boolean; m?: string; basePath: string }) {
@@ -42,7 +42,7 @@ export default async function PersonBody({ admin, m, basePath }: { admin: boolea
     <PayEditorProvider editable={admin}>
       <MemberSelect members={members.map((m) => ({ id: m.id, name: m.name }))} value={member.id} basePath={basePath} />
 
-      <Card className="mx-4 mt-3 gap-0 rounded-[10px] py-4">
+      <Card className="mx-4 mt-3 gap-0 rounded-xl py-4">
         <CardContent className="px-4">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <div className="text-lg font-semibold">{member.name}</div>
@@ -52,13 +52,12 @@ export default async function PersonBody({ admin, m, basePath }: { admin: boolea
           </div>
           <div className="mt-0.5 text-[13px] text-muted-foreground">가입일 {member.joined_at}</div>
           <div className="mt-3 flex gap-2.5">
-            <div className="flex-1 rounded-[10px] bg-[#ddf0e6] p-2.5 text-center text-[#0b5a44]"><div className="text-xs font-semibold">납부</div><b className="text-xl">{paidN}개월</b></div>
-            <div className="flex-1 rounded-[10px] bg-[#fce3d6] p-2.5 text-center text-[#8a2f0b]"><div className="text-xs font-semibold">미납</div><b className="text-xl">{unpaidN}개월</b></div>
+            <div className="flex-1 rounded-xl bg-[#f0faf6] p-2.5 text-center text-[#029359]"><div className="text-xs font-semibold">납부</div><b className="text-xl">{paidN}개월</b></div>
+            <div className="flex-1 rounded-xl bg-[#ffeeee] p-2.5 text-center text-[#d22030]"><div className="text-xs font-semibold">미납</div><b className="text-xl">{unpaidN}개월</b></div>
           </div>
         </CardContent>
       </Card>
 
-      {admin && <div className="px-4 pt-3"><ExceptionToggle /></div>}
 
       <div className={admin ? "ptable admin" : "ptable"}>
         <div className="prow phead">

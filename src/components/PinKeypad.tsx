@@ -37,7 +37,7 @@ export default function PinKeypad({ onComplete, disabled = false }: { onComplete
               disabled={disabled}
               aria-label={k === "del" ? "지우기" : k}
               onClick={() => press(k)}
-              className="h-16 rounded-[10px] border-0 bg-secondary text-2xl font-normal hover:bg-secondary active:bg-neutral-300"
+              className="h-16 rounded-xl border-0 bg-secondary text-2xl font-normal hover:bg-secondary active:bg-neutral-300"
             >
               {k === "del" ? <Delete className="size-6" /> : k}
             </Button>

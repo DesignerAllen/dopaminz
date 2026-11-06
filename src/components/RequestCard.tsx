@@ -1,15 +1,15 @@
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "./tds";
 import { cn } from "@/lib/utils";
 import { activePeople, breakdown, canceledPeople, dotDate, paidInfo, won } from "@/lib/ticket-calc";
 import type { TicketRequest } from "@/lib/tickets";
 
-/** 납부 상태 배지: 취소됨 / 납부(전원) / 일부 납부(n/m) / 미납 */
+/** 납부 상태 배지(TDS Badge weak): 취소됨 / 납부(전원) / 일부 납부(n/m) / 미납 */
 export function StatusBadge({ r }: { r: Pick<TicketRequest, "status" | "people"> }) {
-  if (r.status === "canceled") return <Badge variant="outline" className="h-6 bg-muted px-2.5 text-[12px] text-muted-foreground">취소됨</Badge>;
+  if (r.status === "canceled") return <Badge size="small" color="elephant" variant="weak">취소됨</Badge>;
   const i = paidInfo(r);
-  if (i.all) return <Badge className="h-6 border-transparent bg-[#ddf0e6] px-2.5 text-[12px] font-semibold text-[#0b5a44]">납부</Badge>;
-  if (i.partial) return <Badge className="h-6 border-transparent bg-[#fff1b8] px-2.5 text-[12px] font-semibold text-[#5e4100]">일부 납부 {i.paidCount}/{i.total}</Badge>;
-  return <Badge className="h-6 border-transparent bg-[#fce3d6] px-2.5 text-[12px] font-semibold text-[#8a2f0b]">미납</Badge>;
+  if (i.all) return <Badge size="small" color="green" variant="weak">납부</Badge>;
+  if (i.partial) return <Badge size="small" color="yellow" variant="weak">일부 납부 {i.paidCount}/{i.total}</Badge>;
+  return <Badge size="small" color="red" variant="weak">미납</Badge>;
 }
 
 /** 크루권 신청 한 건. 크루원 목록과 관리자 목록이 함께 쓴다. actions: 카드 아래에 놓을 버튼 영역 */
@@ -26,13 +26,13 @@ export default function RequestCard({ r, actions, admin = false }: { r: TicketRe
       ? [["납부 인원", paid], ["미납 인원", unpaid], ["취소 인원", canceledList]] as const
       : [["납부 인원", paid], ["미납 인원", unpaid]] as const;
   return (
-    <li className="rounded-[10px] border bg-card p-3.5">
+    <li className="rounded-2xl bg-[#f2f4f6] p-4">
       <div className="flex items-center justify-between gap-2">
         <span className="text-[13px] text-muted-foreground">{dotDate(r.used_on)}</span>
-        {admin || canceled ? <StatusBadge r={r} /> : <Badge variant="outline" className="h-6 bg-muted px-2.5 text-[12px] font-semibold">{r.item_name}</Badge>}
+        {admin || canceled ? <StatusBadge r={r} /> : <Badge size="small" color="elephant" variant="weak">{r.item_name}</Badge>}
       </div>
       <div className={cn("mt-1.5", canceled && "opacity-60")}>
-        <div className="flex flex-wrap items-baseline gap-x-2 text-[15px] font-semibold">
+        <div className="flex flex-wrap items-baseline gap-x-2 text-[17px] leading-[25.5px] font-semibold text-[#191f28]">
           <span>{r.center_name}{r.branch_name ? ` · ${r.branch_name}` : ""}</span>
           {admin && <span className="text-[13px] font-normal text-muted-foreground">{r.item_name}</span>}
         </div>

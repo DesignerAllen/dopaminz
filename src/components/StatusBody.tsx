@@ -2,7 +2,7 @@ import { SERVICE_START, kindForAdmin, kindOf, miToYm, summarize, todayKst, ymToM
 import { loadActiveMembers, loadActivePaymentsAll, loadLatestPaidMonth, loadNotice } from "@/lib/status-data";
 import CopyAccount from "./CopyAccount";
 import MonthCarousel, { type Panel } from "./MonthCarousel";
-import { ExceptionToggle, PayEditorProvider } from "./PayEditor";
+import { PayEditorProvider } from "./PayEditor";
 
 /** 월별 납부 현황 표. 크루원 화면(읽기 전용)과 관리자 화면(체크 편집)이 함께 쓴다.
  *  personBase: 이름을 눌렀을 때 이동할 인원별 화면 주소(뒤에 ?m=<id>가 붙는다). */
@@ -51,7 +51,7 @@ export default async function StatusBody({ admin, personBase, showNotice }: { ad
   return (
     <PayEditorProvider editable={admin}>
       {showNotice && (
-        <section className="mx-4 mt-2 rounded-[10px] bg-primary p-4 text-primary-foreground" aria-label="월 회비 안내">
+        <section className="mx-4 mt-2 rounded-xl bg-primary p-4 text-primary-foreground" aria-label="월 회비 안내">
           <div className="flex items-center justify-between gap-3">
             <div>
               <div className="text-[13px] text-primary-foreground/70">월 회비</div>
@@ -63,7 +63,6 @@ export default async function StatusBody({ admin, personBase, showNotice }: { ad
         </section>
       )}
 
-      {admin && <div className="px-4 pt-2.5"><ExceptionToggle /></div>}
 
       <MonthCarousel panels={panels} curYm={curYm} defaultIndex={defaultIndex} admin={admin} personBase={personBase} />
       <div className="h-8" aria-hidden="true" />

@@ -6,6 +6,7 @@ import MemberCombobox from "@/components/MemberCombobox";
 import PinKeypad from "@/components/PinKeypad";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { rememberMember } from "@/lib/last-member";
 
 type LoginMember = { id: number; name: string; hasPin: boolean };
 type Step = "pick" | "pin" | "confirm";
@@ -16,7 +17,7 @@ const STEPS: { key: Step; label: string }[] = [
 ];
 
 /** 클메이트 시작 전 최초 1회: 크루원 선택 → 개인 비밀번호 등록 → 확인. 끝나면 그 크루원으로 로그인된 채 테스트로 이동한다. */
-export default function ClimbSetup({ members }: { members: LoginMember[] }) {
+export default function ClimbSetup({ members, next = "/climbmate/test" }: { members: LoginMember[]; next?: string }) {
   const router = useRouter();
   const [step, setStep] = useState<Step>("pick");
   const [sel, setSel] = useState<number | null>(null);
@@ -29,7 +30,7 @@ export default function ClimbSetup({ members }: { members: LoginMember[] }) {
 
   async function loginInstead() {
     await fetch("/api/auth/logout", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
-    router.replace("/login?next=/climbmate");
+    router.replace("/login");
     router.refresh();
   }
 
@@ -54,7 +55,8 @@ export default function ClimbSetup({ members }: { members: LoginMember[] }) {
         body: JSON.stringify({ memberId: person.id, pin }),
       });
       if (res.ok) {
-        router.replace("/climbmate/test");
+        rememberMember(person.id);
+        router.replace(next);
         router.refresh();
         return;
       }
@@ -94,7 +96,7 @@ export default function ClimbSetup({ members }: { members: LoginMember[] }) {
           <p className="text-sm leading-relaxed text-muted-foreground">내 결과를 저장하고 다음에 나만의 비밀번호로 로그인하려면 크루원을 먼저 선택해 주세요. 한 번만 하면 돼요.</p>
           <div className="flex"><MemberCombobox options={members} selectedId={sel} onSelect={(id) => { setSel(id); setMsg(""); }} query={q} onQuery={setQ} label="크루원 선택" placeholder="내 이름 검색" /></div>
           {taken && (
-            <div className="rounded-[10px] bg-secondary p-3.5 text-sm leading-relaxed" role="note">
+            <div className="rounded-xl bg-secondary p-3.5 text-sm leading-relaxed" role="note">
               <b>{person!.name}</b>님은 이미 비밀번호를 등록했어요.
               <Button className="mt-2.5 w-full" onClick={loginInstead}>로그인 화면에서 이름으로 로그인하기</Button>
             </div>

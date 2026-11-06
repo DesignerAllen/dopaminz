@@ -25,9 +25,9 @@ export default function NoticeArticle({ n, showShare = false }: { n: Notice; sho
   return (
     <>
       {n.status === "미노출" && (
-        <Alert className="mx-4 mt-3 w-auto border-amber-300 bg-amber-100 text-amber-950">
+        <Alert className="mx-4 mt-3 w-auto border-0 bg-[#fff9e7] text-[#191f28]">
           <EyeOff />
-          <AlertDescription className="text-amber-950">미노출 상태예요. 크루원에게는 보이지 않아요.</AlertDescription>
+          <AlertDescription className="text-[#191f28]">미노출 상태예요. 크루원에게는 보이지 않아요.</AlertDescription>
         </Alert>
       )}
       <article className="px-4 pt-5 pb-4">

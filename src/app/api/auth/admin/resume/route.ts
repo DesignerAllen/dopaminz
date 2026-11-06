@@ -10,9 +10,9 @@ const go = (path: string) => new NextResponse(null, { status: 307, headers: { Lo
 export async function GET() {
   const s = await readSession();
   if (!s || !hasAdminAuth(s) || (await currentVersion()) !== s.ver) {
-    if (s && hasAdminAuth(s)) await writeSession({ ver: s.ver }); // 버전이 어긋난 옛 인증은 지워서 /admin/login ↔ 여기 무한 이동을 막는다
+    if (s && hasAdminAuth(s)) await writeSession({ ver: s.ver, mid: s.mid }); // 버전이 어긋난 옛 인증은 지워서 /admin/login ↔ 여기 무한 이동을 막는다
     return go(s ? "/admin/login" : "/login");
   }
-  await writeSession({ ver: s.ver, admin: true });
+  await writeSession({ ver: s.ver, mid: s.mid, admin: true });
   return go("/admin");
 }

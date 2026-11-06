@@ -19,7 +19,7 @@
 
   /* ── 머리글 높이(고정 영역 쌓임 계산): 관리자 모드 = 관리자 바 + 제목줄 + 탭 ── */
   --h-adminbar: 40px;
-  --h-subbar: 52px;
+  --h-subbar: 56px;
   --h-tabs: 48px;
   --stick-viewer: var(--h-subbar);
   --stick-admin: calc(var(--h-adminbar) + var(--h-subbar) + var(--h-tabs));
@@ -29,7 +29,7 @@
   --outer: var(--muted);
   --ink: var(--foreground);
   --fg-muted: var(--muted-foreground);
-  --muted-strong: oklch(0.371 0 0);
+  --muted-strong: #4e5968; /* grey700 */
   --brand: var(--primary);
   --brand-dark: var(--primary);
   --key-border: var(--border);
@@ -37,24 +37,24 @@
   --error: var(--destructive);
 
   /* ── shadcn 기본 테마: baseColor "neutral" (무채색) ── */
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --background: #ffffff;
+  --foreground: #191f28; /* TDS grey900 */
+  --card: #ffffff;
+  --card-foreground: #191f28;
+  --popover: #ffffff;
+  --popover-foreground: #191f28;
+  --primary: #333d4b; /* TDS grey800: 파란색 대신 진한 회색을 주색으로 */
+  --primary-foreground: #ffffff;
+  --secondary: #f2f4f6; /* grey100 */
+  --secondary-foreground: #333d4b;
+  --muted: #f2f4f6;
+  --muted-foreground: #6b7684; /* grey600 */
+  --accent: #f2f4f6;
+  --accent-foreground: #333d4b;
+  --destructive: #f04452; /* red500 */
+  --border: #e5e8eb; /* grey200 */
+  --input: #f2f4f6;
+  --ring: #8b95a1; /* grey500 */
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -68,10 +68,12 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  --radius: 0.625rem;
+  --radius: 0.75rem; /* 12px */
 }
 /* 기본 초기화는 Tailwind(preflight)가 맡는다. 여기서는 앱 바탕만 정한다. */
 html, body { background: var(--outer); color: var(--ink); line-height: 1.45; font-weight: 400; }
+/* 모바일 터치: 탭 하이라이트 제거, 더블탭 확대 지연 없음 */
+a, button, [role="button"], input, select, textarea, label { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 /* 굵은 글씨는 Bold(700)가 아니라 SemiBold(600)로 통일 */
 b, strong { font-weight: 600; }
 
@@ -79,15 +81,15 @@ b, strong { font-weight: 600; }
 
 /* ── 납부 현황 표(고정 머리글 · 좌측 이름 칼럼 · 3개월 캐러셀)와 납부 상태 칸 ──
    shadcn 컴포넌트로 만들기 어려운 맞춤 레이아웃이라 CSS 로 둔다. */
-.cell { min-height: 44px; border-radius: 10px; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 3px; border: 1px solid transparent; }
-.cell.paid { background: #ddf0e6; color: #0b5a44; }
-.cell.exception { background: #e4e6fb; color: #2e3190; }
-.cell.unpaid { background: #fce3d6; color: #8a2f0b; }
+.cell { min-height: 44px; border-radius: 12px; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 3px; border: 1px solid transparent; }
+.cell.paid { background: #f0faf6; color: #029359; }
+.cell.exception { background: #f2f4f6; color: #4e5968; }
+.cell.unpaid { background: #ffeeee; color: #d22030; }
 .cell.free { color: var(--muted-foreground); font-weight: 400; }
 .cell.upcoming { background: var(--muted); color: var(--muted-strong); font-weight: 400; }
 .cell.na { color: var(--muted-foreground); font-weight: 400; }
 .cell.editable { cursor: pointer; width: 100%; background-clip: padding-box; box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--ring); }
-.cell.warn { background: #fff1b8; color: #5e4100; }
+.cell.warn { background: #fff9e7; color: #dd7d02; }
 
 /* 월별 현황(표): 왼쪽 이름 칼럼 고정 + 오른쪽 월 칼럼만 캐러셀 */
 .search-wrap { padding: 24px 16px 12px; position: relative; z-index: var(--z-search); }
@@ -107,7 +109,7 @@ b, strong { font-weight: 600; }
 .panel { flex: 0 0 100%; min-width: 0; }
 /* 머리글·합계 줄은 세로 스크롤 시 고정 (이름 칼럼과 월 칼럼 모두 같은 높이) */
 .hcell, .mhrow { position: sticky; top: calc(var(--stick) + var(--rb)); z-index: var(--z-sticky-head); height: var(--hh); background: var(--muted); border-bottom: 1px solid var(--border); box-shadow: 0 -20px 0 0 var(--muted); /* 고정됐을 때 위쪽 틈으로 내용이 비쳐 보이지 않게 위로 색을 채운다 */ }
-.sumcell, .msrow { position: sticky; top: calc(var(--stick) + var(--rb) + var(--hh)); z-index: var(--z-sticky-sum); height: var(--sh); background: oklch(0.985 0 0); border-bottom: 1px solid var(--border); }
+.sumcell, .msrow { position: sticky; top: calc(var(--stick) + var(--rb) + var(--hh)); z-index: var(--z-sticky-sum); height: var(--sh); background: #f9fafb; border-bottom: 1px solid var(--border); }
 .hcell { display: flex; align-items: center; padding-left: 12px; font-size: 12px; font-weight: 600; color: var(--muted-strong); }
 .nrow { height: var(--rh); display: flex; align-items: center; gap: 5px; padding-left: 12px; padding-right: 4px; font-size: 14px; font-weight: 600; border-top: 1px solid var(--border); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mrow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; align-items: center; height: var(--rh); padding: 0 12px 0 4px; border-top: 1px solid var(--border); }

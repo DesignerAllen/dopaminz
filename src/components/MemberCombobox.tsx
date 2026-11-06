@@ -64,7 +64,7 @@ export default function MemberCombobox({
           }}
           onKeyDown={(e) => e.key === "Escape" && setOpen(false)}
           wrapperClassName="p-0"
-          groupClassName="h-11! rounded-[10px]! border-input bg-white px-0 text-base"
+          groupClassName="h-11! rounded-xl! border-input bg-white px-0 text-base"
           className="text-base"
           trailing={
             (text || selected) ? (
@@ -75,7 +75,7 @@ export default function MemberCombobox({
           }
         />
         {open && (
-          <CommandList className="absolute inset-x-0 top-full z-30 mt-1 max-h-64 rounded-[10px] bg-popover p-1 shadow-md ring-1 ring-foreground/10">
+          <CommandList className="absolute inset-x-0 top-full z-30 mt-1 max-h-64 rounded-xl bg-popover p-1 shadow-md ring-1 ring-foreground/10">
             <CommandEmpty>검색 결과가 없어요</CommandEmpty>
             <CommandGroup className="p-0">
               {shown.map((o) => (

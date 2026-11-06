@@ -15,7 +15,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { DEFAULT_SORT, sortMembers, type SortKey } from "@/lib/member-sort";
 
-type M = { id: number; name: string; joined_at: string; instagram_id: string | null; hidden_reason: string | null; hidden_at: string | null; mate: string | null };
+/** 테두리 있는 태그(인스타그램 ID · 성향) */
+const Tag = ({ children }: { children: React.ReactNode }) => (
+  <span className="rounded-lg border border-[#d1d6db] bg-white px-2 py-0.5 text-xs font-medium text-[#4e5968]">{children}</span>
+);
+
+/** 마지막 로그인 시점 → "11월 06일 14시" (한국 시간) */
+function loginText(iso: string) {
+  const p = Object.fromEntries(new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", month: "2-digit", day: "2-digit", hour: "2-digit", hourCycle: "h23" }).formatToParts(new Date(iso)).map((x) => [x.type, x.value]));
+  return `${p.month}월 ${p.day}일 ${p.hour}시`;
+}
+
+type M = { id: number; name: string; joined_at: string; instagram_id: string | null; hidden_reason: string | null; hidden_at: string | null; last_login_at: string | null; mate: string | null };
 const REASONS = ["자진 탈퇴", "경고 탈퇴", "기타"] as const;
 
 // 모달에서 편집 중인 값. id 가 없으면 신규 등록.
@@ -96,9 +107,9 @@ export default function MemberManager({ active, hidden, warnings, today }: { act
   return (
     <div className="px-4 pt-3 pb-10">
       {warnings.length > 0 && (
-        <Alert className="mb-3 border-amber-300 bg-amber-100 text-amber-950">
+        <Alert className="mb-3 border-0 bg-[#fff9e7] text-[#191f28]">
           <TriangleAlert />
-          <AlertDescription className="text-amber-950">
+          <AlertDescription className="text-[#191f28]">
             <b>확인 필요</b> — 가입일 이전 달에 납부 기록이 있어요
             {warnings.map((w) => <div key={w}>· {w}</div>)}
           </AlertDescription>
@@ -112,12 +123,16 @@ export default function MemberManager({ active, hidden, warnings, today }: { act
         <SortSelect value={sort} onChange={setSort} />
         <MemberCombobox options={active} selectedId={sel} onSelect={setSel} query={q} onQuery={setQ} />
       </div>
-      <ul className="divide-y overflow-hidden rounded-[10px] border bg-card">
+      <ul className="divide-y divide-border overflow-hidden rounded-2xl bg-secondary">
         {shownActive.map((m) => (
           <li key={m.id} className="flex min-h-15 items-center gap-2 px-3 py-2">
             <div className="min-w-0 flex-1">
-              <div className="text-[15px] font-semibold">{m.name}{m.mate && <span className="ml-1.5 rounded-full bg-secondary px-2 py-0.5 align-middle text-xs font-medium text-foreground/80">{m.mate}</span>}</div>
-              <div className="text-xs text-muted-foreground">가입 {m.joined_at}{m.instagram_id ? ` · @${m.instagram_id}` : ""}</div>
+              <div className="flex flex-wrap items-center gap-1.5 text-[15px] font-semibold">
+                {m.name}
+                {m.instagram_id && <Tag>@{m.instagram_id}</Tag>}
+                {m.mate && <Tag>{m.mate}</Tag>}
+              </div>
+              <div className="text-xs text-muted-foreground">가입 {m.joined_at}{m.last_login_at ? ` (${loginText(m.last_login_at)})` : ""}</div>
             </div>
             <Button variant="outline" size="sm" className="h-11" onClick={() => openEdit(m, false)}>수정</Button>
           </li>
@@ -130,7 +145,7 @@ export default function MemberManager({ active, hidden, warnings, today }: { act
       {REASONS.map((r) => {
         const items = hidden.filter((m) => m.hidden_reason === r);
         return (
-          <section key={r} className="mb-2.5 overflow-hidden rounded-[10px] border bg-card">
+          <section key={r} className="mb-2.5 overflow-hidden rounded-2xl bg-secondary">
             <div className="bg-secondary px-3.5 py-2 text-[13px] font-semibold text-foreground/80">{r} · {items.length}명</div>
             <ul className="divide-y">
               {items.map((m) => (
@@ -212,9 +227,9 @@ export default function MemberManager({ active, hidden, warnings, today }: { act
                 {err && <p className="text-[13px] font-normal text-destructive" role="status">{err}</p>}
 
                 {confirmWarn && (
-                  <Alert className="border-amber-300 bg-amber-100 text-amber-950">
+                  <Alert className="border-0 bg-[#fff9e7] text-[#191f28]">
                     <TriangleAlert />
-                    <AlertDescription className="text-amber-950">
+                    <AlertDescription className="text-[#191f28]">
                       {confirmWarn.map((w) => <div key={w}>· {w}</div>)}
                       <Button variant="outline" className="mt-2 w-full" disabled={busy} onClick={() => save(true)}>확인했어요, 그대로 저장</Button>
                     </AlertDescription>

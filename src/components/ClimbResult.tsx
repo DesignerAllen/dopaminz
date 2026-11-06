@@ -22,7 +22,7 @@ export default function ClimbResult({ axes, crewNames, owner }: { axes: number[]
         <ul className="flex flex-wrap gap-1.5">
           {type.strengths.map((s) => <li key={s} className="rounded-full bg-secondary px-3 py-1.5 text-sm">{s}</li>)}
         </ul>
-        <div className="mt-1 rounded-[10px] border bg-card p-3.5 text-sm leading-relaxed"><b className="mr-1.5">성장 팁</b>{type.tip}</div>
+        <div className="mt-1 rounded-2xl bg-secondary p-4 text-sm leading-relaxed"><b className="mr-1.5">성장 팁</b>{type.tip}</div>
       </section>
 
       <section aria-label="축별 응답" className="flex flex-col gap-3.5">
@@ -55,7 +55,7 @@ export default function ClimbResult({ axes, crewNames, owner }: { axes: number[]
         {mates.map(({ kind, type: t }) => {
           const pair = kind === "best" ? bestPairText(key, t.key) : null;
           return (
-            <div key={kind} className={cn("rounded-[10px] border p-3.5", kind === "best" ? "border-primary bg-card" : "bg-card")}>
+            <div key={kind} className={cn("rounded-xl border p-3.5", kind === "best" ? "border-primary bg-card" : "bg-card")}>
               <div className={cn("text-xs font-semibold", kind === "best" ? "text-primary" : "text-muted-foreground")}>{MATE_LABEL[kind]}</div>
               <div className="mt-0.5 text-base font-semibold">{t.alias}</div>
               <div className="text-[13px] text-muted-foreground">{t.catch}</div>
