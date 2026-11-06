@@ -92,7 +92,7 @@ export default async function HomePage() {
             <p className="mt-1 text-[15px] leading-[22.5px] text-[#4e5968]">오늘도 즐겁게 운동해요</p>
           </div>
           {session.mid ? (
-          <Link href="/settings" transitionTypes={["nav-forward"]} aria-label="설정" className={`flex size-10 flex-none items-center justify-center rounded-full text-[#6b7684] ${press} active:bg-[#f2f4f6]`}>
+          <Link href="/settings" aria-label="설정" className={`flex size-10 flex-none items-center justify-center rounded-full text-[#6b7684] ${press} active:bg-[#f2f4f6]`}>
             <Settings className="size-[22px]" strokeWidth={1.8} />
           </Link>
           ) : (
@@ -125,7 +125,7 @@ export default async function HomePage() {
         <ListRow href="/gym-roulette" left={<AssetText>🎲</AssetText>} top="오늘 어디 갈지 고민될 때" bottom="암장 룰렛" withArrow />
       </main>
       <footer className="mt-auto flex items-center justify-start bg-white p-4">
-        <Link href="/admin/login" transitionTypes={["nav-forward"]} aria-label="관리자 모드" className={`flex size-10 items-center justify-center rounded-full text-[#8b95a1] ${press} active:bg-[#f2f4f6]`}>
+        <Link href="/admin/login" aria-label="관리자 모드" className={`flex size-10 items-center justify-center rounded-full text-[#8b95a1] ${press} active:bg-[#f2f4f6]`}>
           <Settings2 className="size-[22px]" strokeWidth={1.8} />
         </Link>
       </footer>

@@ -24,7 +24,7 @@ export default async function TicketsPage() {
       <TicketIntro centers={intro} account={notice.notice_account} />
       <div className="px-4 pt-4">
         <Button asChild size="lg" className="w-full">
-          <Link href="/tickets/new" transitionTypes={["nav-forward"]}><Plus /> 크루권 신청하기</Link>
+          <Link href="/tickets/new"><Plus /> 크루권 신청하기</Link>
         </Button>
       </div>
       <TicketList requests={requests} ready={ready} centers={centers.map((c) => c.name)} />

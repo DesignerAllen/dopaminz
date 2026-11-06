@@ -184,23 +184,3 @@ a.nrow:active { background: var(--accent); }
   body { @apply bg-background text-foreground; }
   html { @apply font-sans; }
 }
-
-/* ── 화면 전환(View Transitions): 앞으로 = 왼쪽으로 밀려나가고 오른쪽에서 들어옴, 뒤로 = 반대. 머리글은 고정 ── */
-::view-transition { pointer-events: none; }
-::view-transition-old(.nav-forward) { --slide-offset: -40px; animation: 140ms ease-in both vt-fade reverse, 300ms cubic-bezier(.2,.8,.2,1) both vt-slide reverse; }
-::view-transition-new(.nav-forward) { --slide-offset: 40px; animation: 200ms ease-out 100ms both vt-fade, 300ms cubic-bezier(.2,.8,.2,1) both vt-slide; }
-::view-transition-old(.nav-back) { --slide-offset: 40px; animation: 140ms ease-in both vt-fade reverse, 300ms cubic-bezier(.2,.8,.2,1) both vt-slide reverse; }
-::view-transition-new(.nav-back) { --slide-offset: -40px; animation: 200ms ease-out 100ms both vt-fade, 300ms cubic-bezier(.2,.8,.2,1) both vt-slide; }
-@keyframes vt-slide { from { translate: var(--slide-offset); } to { translate: 0; } }
-@keyframes vt-fade { from { opacity: 0; } to { opacity: 1; } }
-/* 머리글도 본문과 함께 움직이게 둔다(따로 고정하면 화면마다 다른 머리글 내용이 갑자기 바뀌어 튀어 보인다).
-   움직이는 화면은 앱 폭(.shell) 밖으로 번져 회색 바깥 배경 위로 나가지 않도록 그룹 영역에서 잘라낸다 */
-::view-transition-group(.nav-forward), ::view-transition-group(.nav-back) { overflow: clip; }
-/* 바탕(root)은 크로스페이드하지 않고 새 화면 것으로 바로 고정: 투명해지는 중간에 회색 바깥 배경이 비쳐 보이는 것을 막는다 */
-::view-transition-old(root) { display: none; }
-::view-transition-new(root) { animation: none; }
-/* 모바일(앱 폭 = 화면 폭)에서는 바깥 회색이 필요 없다. 주소창·노치 영역이나 스냅샷 가장자리에 회색이 보이지 않도록 흰색으로 */
-@media (max-width: 480px) { html, body { background: var(--ground); } }
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(*), ::view-transition-new(*), ::view-transition-group(*) { animation-duration: 0s !important; animation-delay: 0s !important; }
-}

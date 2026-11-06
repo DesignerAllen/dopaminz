@@ -55,7 +55,7 @@ export default function MemberList({ members, today }: { members: M[]; today: st
           return (
             <li key={m.id} className="flex items-center gap-4 px-6 py-3">
               {m.mate ? (
-                <Link href={`/climbmate/result/${m.id}?from=members`} transitionTypes={["nav-forward"]} className={`-mx-2 -my-1 min-w-0 flex-1 rounded-lg px-2 py-1 ${press}`}>{body}</Link>
+                <Link href={`/climbmate/result/${m.id}?from=members`} className={`-mx-2 -my-1 min-w-0 flex-1 rounded-lg px-2 py-1 ${press}`}>{body}</Link>
               ) : (
                 <span className="min-w-0 flex-1">{body}</span>
               )}

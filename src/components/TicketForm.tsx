@@ -81,7 +81,7 @@ export default function TicketForm({ centers, members, today, account }: {
       if (res.status === 401) return router.replace("/login?next=/tickets/new");
       if (!res.ok) return setErr(data.error ?? "신청하지 못했어요. 다시 시도해 주세요");
       toast.success("크루권을 신청했어요");
-      router.replace("/tickets", { transitionTypes: ["nav-back"] });
+      router.replace("/tickets");
       router.refresh();
     } finally {
       setBusy(false);

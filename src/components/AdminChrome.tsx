@@ -10,7 +10,7 @@ export default function AdminChrome() {
 
   async function exit(kind: "adminOnly" | "adminLogout") {
     await fetch("/api/auth/logout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ [kind]: true }) });
-    router.replace("/", { transitionTypes: ["nav-back"] });
+    router.replace("/");
     router.refresh();
   }
 
