@@ -11,11 +11,24 @@ const WARNING = "입장코드는 외부인에게 노출되지 않도록 주의�
 
 type Center = { id: number; name: string; branches: string[]; code: string | null; remaining?: number | null };
 
-/** 크루권 신청 목록 상단 안내: 사용 가능한 센터·지점과 [입장코드 보기](누르면 센터별 입장코드 표시, 복사 기능 없음) */
-export default function TicketIntro({ centers, account }: { centers: Center[]; account?: string }) {
+/** admin: 관리자 목록용 간단 표시(센터명 + 남은 횟수만. 안내문·지점·입장코드·계좌 버튼 없음)
+ *  크루권 신청 목록 상단 안내: 사용 가능한 센터·지점과 [입장코드 보기](누르면 센터별 입장코드 표시, 복사 기능 없음) */
+export default function TicketIntro({ centers, account, admin = false }: { centers: Center[]; account?: string; admin?: boolean }) {
   const [open, setOpen] = useState(false);
   const withCode = centers.filter((c) => c.code);
   if (centers.length === 0) return null;
+  if (admin) {
+    return (
+      <ul className="mx-4 mt-4 space-y-1 rounded-2xl bg-accent px-3 py-3.5 text-sm text-accent-foreground">
+        {centers.map((c) => (
+          <li key={c.id} className="flex items-baseline justify-between gap-3">
+            <b className="min-w-0 font-semibold">{c.name}</b>
+            {c.remaining != null && <b className="flex-none font-semibold tabular-nums">{c.remaining.toLocaleString("ko-KR")}회 남음</b>}
+          </li>
+        ))}
+      </ul>
+    );
+  }
   return (
     <>
       <Alert className="mx-4 mt-4 w-auto border-0 bg-accent px-3 py-4 text-accent-foreground">

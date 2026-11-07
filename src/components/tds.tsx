@@ -38,8 +38,10 @@ export function AssetText({ children }: { children: string }) {
   );
 }
 
-/** ListRow: left / contents(2RowTypeA: top t7 grey600 · bottom t5 semibold grey900) / right, 상하 12px · 좌우 24px, 눌림 효과 */
-export function ListRow({ href, left, top, bottom, contents, right, withArrow = false }: { href?: string; left?: React.ReactNode; top?: string; bottom?: string; contents?: React.ReactNode; right?: React.ReactNode; withArrow?: boolean }) {
+/** ListRow: left / contents(2RowTypeA: top t7 grey600 · bottom t5 semibold grey900) / right, 상하 verticalPadding(기본 12px) · 좌우 24px, 눌림 효과.
+ *  rightAlignment="top" 이면 right 가 위쪽에 붙는다. */
+const ROW_PAD = { small: "py-2", medium: "py-3", large: "py-4", xlarge: "py-6" } as const;
+export function ListRow({ href, left, top, bottom, contents, right, withArrow = false, rightAlignment = "center", verticalPadding = "medium" }: { href?: string; left?: React.ReactNode; top?: string; bottom?: string; contents?: React.ReactNode; right?: React.ReactNode; withArrow?: boolean; rightAlignment?: "top" | "center"; verticalPadding?: keyof typeof ROW_PAD }) {
   const inner = (
     <>
       {left}
@@ -51,11 +53,11 @@ export function ListRow({ href, left, top, bottom, contents, right, withArrow = 
           </>
         )}
       </span>
-      {right}
+      {right && <span className={cn("flex-none", rightAlignment === "top" && "self-start")}>{right}</span>}
       {withArrow && <ChevronRight className="size-5 flex-none text-[#b0b8c1]" aria-hidden="true" />}
     </>
   );
-  const cls = "flex items-center gap-4 px-6 py-3";
+  const cls = cn("flex items-center gap-4 px-6", ROW_PAD[verticalPadding]);
   return href ? (
     <Link href={href} className={cn(cls, pressRow)}>{inner}</Link>
   ) : (
@@ -67,7 +69,7 @@ export function ListRow({ href, left, top, bottom, contents, right, withArrow = 
  *  size: xsmall | small | medium | large · color: blue | teal | green | red | yellow | elephant · variant: fill(채도 높음) | weak(채도 낮음).
  *  문서에 px 값은 없어서 높이·글자 크기는 TDS 타이포(t7 13 / st12 12 / st13 11)에 맞춰 잡았다. */
 export type BadgeSize = "xsmall" | "small" | "medium" | "large";
-export type BadgeColor = "blue" | "teal" | "green" | "red" | "yellow" | "elephant";
+export type BadgeColor = "blue" | "teal" | "green" | "red" | "yellow" | "purple" | "elephant";
 export type BadgeVariant = "fill" | "weak";
 
 const BADGE_SIZE: Record<BadgeSize, string> = {
@@ -83,6 +85,7 @@ const BADGE_COLOR: Record<BadgeColor, Record<BadgeVariant, string>> = {
   green: { fill: "bg-[#03b26c] text-white", weak: "bg-[#f0faf6] text-[#029359]" },
   red: { fill: "bg-[#f04452] text-white", weak: "bg-[#ffeeee] text-[#d22030]" },
   yellow: { fill: "bg-[#ffc342] text-[#191f28]", weak: "bg-[#fff9e7] text-[#dd7d02]" },
+  purple: { fill: "bg-[#8b5cf6] text-white", weak: "bg-[#f3eefe] text-[#6d28d9]" },
   elephant: { fill: "bg-[#4e5968] text-white", weak: "bg-[#f2f4f6] text-[#4e5968]" },
 };
 

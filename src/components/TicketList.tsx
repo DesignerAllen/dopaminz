@@ -16,7 +16,7 @@ export default function TicketList({ requests, ready, centers }: { requests: Tic
       {filtered.length === 0 ? (
         <p className="p-8 text-center text-[15px] text-[#6b7684]">{active ? "조건에 맞는 신청이 없어요" : "신청 내역이 없어요"}</p>
       ) : (
-        <ul className="mx-4 mt-3 flex flex-col gap-2.5">
+        <ul className="mt-1">
           {filtered.map((r) => <RequestCard key={r.id} r={r} />)}
         </ul>
       )}

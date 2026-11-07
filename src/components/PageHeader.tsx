@@ -12,6 +12,7 @@ const ADMIN_TABS = [
   { href: "/admin/members", label: "회원", key: "members" },
   { href: "/admin/notices", label: "공지", key: "notices" },
   { href: "/admin/tickets", label: "크루권", key: "tickets" },
+  { href: "/admin/applications", label: "신청서", key: "applications" },
   { href: "/admin/settings", label: "설정", key: "settings" },
 ] as const;
 

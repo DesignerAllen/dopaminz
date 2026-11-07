@@ -119,11 +119,11 @@ export default function TicketCatalogManager({ centers, ready, passes }: { cente
 
             <section aria-label={`${c.name} 횟수`}>
               <h3 className="mb-1 text-[13px] font-semibold text-muted-foreground">횟수 (신청 인원만큼 차감)</h3>
-              <ul className="divide-y">
+              <ul className="-mx-4">
                 {passes.filter((p) => p.center_id === c.id).map((p) => {
                   const left = Math.max(0, p.quantity - p.used);
                   return (
-                    <li key={p.id} className="flex min-h-12 items-center gap-2 py-1.5">
+                    <li key={p.id} className="relative flex items-center gap-4 px-6 py-4 after:absolute after:right-0 after:bottom-0 after:left-6 after:h-px after:bg-[#f2f4f6] last:after:hidden">
                       <span className="min-w-0 flex-1 text-sm leading-snug">
                         <span className="font-semibold">{p.start_date.replaceAll("-", ".")} ~ {p.end_date.replaceAll("-", ".")}</span>
                         <span className="block text-xs text-muted-foreground">{p.quantity}회 중 {p.used}회 사용 · <b className="font-semibold text-foreground">{left}회 남음</b>{p.end_date < todayStr() && " · 기간 만료"}</span>
@@ -138,9 +138,9 @@ export default function TicketCatalogManager({ centers, ready, passes }: { cente
 
             <section aria-label={`${c.name} 항목과 금액`}>
               <h3 className="mb-1 text-[13px] font-semibold text-muted-foreground">항목 · 금액 (1인 기준, 모든 지점 동일)</h3>
-              <ul className="divide-y">
+              <ul className="-mx-4">
                 {c.items.map((i) => (
-                  <li key={i.id} className="flex min-h-12 items-center gap-2 py-1.5">
+                  <li key={i.id} className="relative flex items-center gap-4 px-6 py-4 after:absolute after:right-0 after:bottom-0 after:left-6 after:h-px after:bg-[#f2f4f6] last:after:hidden">
                     <span className={cn("min-w-0 flex-1 text-sm font-semibold", !i.is_active && "text-muted-foreground line-through")}>{i.name}</span>
                     <span className="text-right text-sm leading-snug">{won(i.price)}{i.guest_price !== null && i.guest_price !== i.price && <span className="block text-xs text-muted-foreground">게스트 {won(i.guest_price)}</span>}</span>
                     <Button variant="outline" size="sm" onClick={() => edit("item", i.id, c.id, i.name, i.is_active, i.price, i.guest_price)}>수정</Button>

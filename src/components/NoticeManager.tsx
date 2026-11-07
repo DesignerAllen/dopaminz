@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Pin, TriangleAlert } from "lucide-react";
 import { toast } from "sonner";
+import { ListRow } from "./tds";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -62,18 +63,23 @@ export default function NoticeManager({ notices, ready }: { notices: N[]; ready:
       <Button className="w-full" onClick={() => setDraft({ id: null, title: "", content: "", status: "노출", pinned: false })}>+ 공지 작성</Button>
 
       <h2 className="mt-5 mb-2 px-0.5 text-base font-semibold">공지사항 <span className="text-sm font-normal text-muted-foreground">{notices.length}개</span></h2>
-      <ul className="divide-y divide-border overflow-hidden rounded-2xl bg-secondary">
+      <ul className="-mx-4">
         {notices.map((n) => (
-          <li key={n.id} className="flex min-h-16 items-center gap-2 px-3 py-2">
-            <Link href={`/admin/notices/${n.id}`} className="min-w-0 flex-1">
-              <div className="flex min-w-0 items-center gap-1.5 text-[15px] font-semibold">
-                {n.pinned && <Pin className="size-3.5 flex-none text-primary" aria-label="상단 고정" />}
-                <span className="min-w-0 truncate">{n.title}</span>
-                {n.status === "미노출" && <Badge variant="outline" className="flex-none bg-muted text-foreground/75">미노출</Badge>}
-              </div>
-              <div className="text-xs text-muted-foreground">작성 {n.created}{n.updated ? ` · 수정 ${n.updated}` : ""}</div>
-            </Link>
-            <Button variant="outline" size="sm" className="h-11" onClick={() => setDraft({ id: n.id, title: n.title, content: n.content, status: n.status, pinned: n.pinned })}>수정</Button>
+          <li key={n.id} className="relative after:absolute after:right-0 after:bottom-0 after:left-6 after:h-px after:bg-[#f2f4f6] last:after:hidden">
+            <ListRow
+              verticalPadding="large"
+              contents={
+                <Link href={`/admin/notices/${n.id}`} className="block">
+                  <span className="block text-[13px] leading-[19.5px] text-[#6b7684]">작성 {n.created}{n.updated ? ` · 수정 ${n.updated}` : ""}</span>
+                  <span className="flex min-w-0 items-center gap-1.5 text-[17px] leading-[25.5px] font-semibold text-[#191f28]">
+                    {n.pinned && <Pin className="size-4 flex-none text-primary" aria-label="상단 고정" />}
+                    <span className="min-w-0 truncate">{n.title}</span>
+                    {n.status === "미노출" && <Badge variant="outline" className="flex-none bg-muted text-foreground/75">미노출</Badge>}
+                  </span>
+                </Link>
+              }
+              right={<Button variant="outline" size="sm" className="h-11" onClick={() => setDraft({ id: n.id, title: n.title, content: n.content, status: n.status, pinned: n.pinned })}>수정</Button>}
+            />
           </li>
         ))}
         {notices.length === 0 && <li className="p-6 text-center text-sm text-muted-foreground">등록된 공지사항이 없어요</li>}

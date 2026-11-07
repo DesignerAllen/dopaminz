@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { TriangleAlert } from "lucide-react";
 import { toast } from "sonner";
+import { ListRow } from "./tds";
 import MemberCombobox from "./MemberCombobox";
 import SortSelect from "./SortSelect";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -13,17 +14,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { DEFAULT_SORT, sortMembers, type SortKey } from "@/lib/member-sort";
+import { korDate } from "@/lib/kor-date";
+import { ADMIN_SORT_OPTIONS, DEFAULT_SORT, sortMembers, type SortKey } from "@/lib/member-sort";
 
 /** 테두리 있는 태그(인스타그램 ID · 성향) */
 const Tag = ({ children }: { children: React.ReactNode }) => (
   <span className="rounded-lg border border-[#d1d6db] bg-white px-2 py-0.5 text-xs font-medium text-[#4e5968]">{children}</span>
 );
 
-/** 마지막 로그인 시점 → "11월 06일 14시" (한국 시간) */
+/** 마지막 로그인 시점 → "11월 06일 14시 05분" (한국 시간) */
 function loginText(iso: string) {
-  const p = Object.fromEntries(new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", month: "2-digit", day: "2-digit", hour: "2-digit", hourCycle: "h23" }).formatToParts(new Date(iso)).map((x) => [x.type, x.value]));
-  return `${p.month}월 ${p.day}일 ${p.hour}시`;
+  const p = Object.fromEntries(new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(new Date(iso)).map((x) => [x.type, x.value]));
+  return `${p.month}월 ${p.day}일 ${p.hour}시 ${p.minute}분`;
 }
 
 type M = { id: number; name: string; joined_at: string; instagram_id: string | null; hidden_reason: string | null; hidden_at: string | null; last_login_at: string | null; mate: string | null };
@@ -120,21 +122,26 @@ export default function MemberManager({ active, hidden, warnings, today }: { act
 
       <h2 className="mt-5 mb-2 px-0.5 text-base font-semibold">회원 <span className="text-sm font-normal text-muted-foreground">{active.length}명</span></h2>
       <div className="mb-2.5 flex items-start gap-2">
-        <SortSelect value={sort} onChange={setSort} />
+        <SortSelect value={sort} onChange={setSort} options={ADMIN_SORT_OPTIONS} />
         <MemberCombobox options={active} selectedId={sel} onSelect={setSel} query={q} onQuery={setQ} />
       </div>
-      <ul className="divide-y divide-border overflow-hidden rounded-2xl bg-secondary">
+      <ul className="-mx-4">
         {shownActive.map((m) => (
-          <li key={m.id} className="flex min-h-15 items-center gap-2 px-3 py-2">
-            <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-1.5 text-[15px] font-semibold">
-                {m.name}
-                {m.instagram_id && <Tag>@{m.instagram_id}</Tag>}
-                {m.mate && <Tag>{m.mate}</Tag>}
-              </div>
-              <div className="text-xs text-muted-foreground">가입 {m.joined_at}{m.last_login_at ? ` (${loginText(m.last_login_at)})` : ""}</div>
-            </div>
-            <Button variant="outline" size="sm" className="h-11" onClick={() => openEdit(m, false)}>수정</Button>
+          <li key={m.id} className="relative after:absolute after:right-0 after:bottom-0 after:left-6 after:h-px after:bg-[#f2f4f6] last:after:hidden">
+            <ListRow
+              verticalPadding="large"
+              contents={
+                <>
+                  <span className="block text-[13px] leading-[19.5px] text-[#6b7684]">가입 {korDate(m.joined_at)}{m.last_login_at ? ` (${loginText(m.last_login_at)})` : ""}</span>
+                  <span className="flex flex-wrap items-center gap-1.5 text-[17px] leading-[25.5px] font-semibold text-[#191f28]">
+                    {m.name}
+                    {m.instagram_id && <Tag>@{m.instagram_id}</Tag>}
+                    {m.mate && <Tag>{m.mate}</Tag>}
+                  </span>
+                </>
+              }
+              right={<Button variant="outline" size="sm" className="h-11" onClick={() => openEdit(m, false)}>수정</Button>}
+            />
           </li>
         ))}
         {shownActive.length === 0 && <li className="p-6 text-center text-sm text-muted-foreground">{active.length === 0 ? "회원이 없어요" : "검색 결과가 없어요"}</li>}
@@ -145,19 +152,27 @@ export default function MemberManager({ active, hidden, warnings, today }: { act
       {REASONS.map((r) => {
         const items = hidden.filter((m) => m.hidden_reason === r);
         return (
-          <section key={r} className="mb-2.5 overflow-hidden rounded-2xl bg-secondary">
-            <div className="bg-secondary px-3.5 py-2 text-[13px] font-semibold text-foreground/80">{r} · {items.length}명</div>
-            <ul className="divide-y">
+          <section key={r} className="mb-2">
+            <div className="px-0.5 pt-2 pb-1 text-[13px] font-semibold text-foreground/80">{r} · {items.length}명</div>
+            <ul className="-mx-4">
               {items.map((m) => (
-                <li key={m.id} className="flex min-h-14 items-center gap-2 px-3 py-2">
-                  <div className="min-w-0 flex-1">
-                    <div className="text-[15px] font-semibold">{m.name}{m.mate && <span className="ml-1.5 rounded-full bg-secondary px-2 py-0.5 align-middle text-xs font-medium text-foreground/80">{m.mate}</span>}</div>
-                    <div className="text-xs text-muted-foreground">가입 {m.joined_at} · 미노출일 {m.hidden_at ?? "-"}</div>
-                  </div>
-                  <Button variant="outline" size="sm" className="h-11" onClick={() => openEdit(m, true)}>수정</Button>
+                <li key={m.id} className="relative after:absolute after:right-0 after:bottom-0 after:left-6 after:h-px after:bg-[#f2f4f6] last:after:hidden">
+                  <ListRow
+                    verticalPadding="large"
+                    contents={
+                      <>
+                        <span className="block text-[13px] leading-[19.5px] text-[#6b7684]">가입 {korDate(m.joined_at)} · 미노출일 {m.hidden_at ? korDate(m.hidden_at) : "-"}</span>
+                        <span className="flex flex-wrap items-center gap-1.5 text-[17px] leading-[25.5px] font-semibold text-[#191f28]">
+                          {m.name}
+                          {m.mate && <Tag>{m.mate}</Tag>}
+                        </span>
+                      </>
+                    }
+                    right={<Button variant="outline" size="sm" className="h-11" onClick={() => openEdit(m, true)}>수정</Button>}
+                  />
                 </li>
               ))}
-              {items.length === 0 && <li className="px-3.5 py-3 text-[13px] text-muted-foreground">해당 회원 없음</li>}
+              {items.length === 0 && <li className="px-6 py-3 text-[13px] text-muted-foreground">해당 회원 없음</li>}
             </ul>
           </section>
         );

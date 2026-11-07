@@ -98,7 +98,7 @@ export default function AdminTicketList({ requests, ready, centers }: { requests
           {!ready ? "크루권 기능을 준비하고 있어요 (0008 마이그레이션 필요)" : filtering ? "조건에 맞는 신청이 없어요" : onlyUnpaid ? "미납 신청이 없어요" : "신청 내역이 없어요"}
         </p>
       ) : (
-        <ul className="mt-3 flex flex-col gap-2.5">
+        <ul className="-mx-4 mt-1">
           {list.map((r) => {
             const i = paidInfo(r);
             return (

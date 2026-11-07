@@ -106,18 +106,18 @@ export default async function HomePage() {
           </div>
         )}
         {!session.mid && <HomeLoginCallout />}
-        <ListRow href="/notices" left={<AssetText>📢</AssetText>} top="크루 규정 및 공지사항" bottom="공지사항" withArrow />
+        <ListRow href="/notices" left={<AssetText>📢</AssetText>} top="모두 읽어주세요" bottom="공지사항" withArrow />
         {session.mid ? (
           <ListRow
             href={type ? "/climbmate/me" : "/climbmate/test"}
             left={<AssetText>🧗</AssetText>}
-            top={type ? "내 클라이밍 유형" : "내 유형을 알아볼까요?"}
-            bottom={type ? type.alias : "12문항, 약 2분이면 끝나요"}
+            top={type ? "내 클라이밍 유형" : "12문항, 약 2분이면 끝나요"}
+            bottom={type ? type.alias : "내 클라이밍 유형은?"}
             right={type ? undefined : <Badge size="small" color="red" variant="fill">내 유형은?</Badge>}
             withArrow
           />
         ) : (
-          <ListRow href="/climbmate" left={<AssetText>🧗</AssetText>} top="내 유형을 알아볼까요?" bottom="12문항, 약 2분이면 끝나요" right={<Badge size="small" color="red" variant="fill">내 유형은?</Badge>} withArrow />
+          <ListRow href="/climbmate" left={<AssetText>🧗</AssetText>} top="12문항, 약 2분이면 끝나요" bottom="내 클라이밍 유형은?" right={<Badge size="small" color="red" variant="fill">내 유형은?</Badge>} withArrow />
         )}
         <ListRow href="/members" left={<AssetText>👥</AssetText>} top="우리 크루원을 확인해보세요" bottom={`${members.length}명의 크루원`} withArrow />
         <ListRow href="/status" left={<AssetText>💰</AssetText>} top="매달 납부 현황 확인" bottom="회비 납부 현황" withArrow />

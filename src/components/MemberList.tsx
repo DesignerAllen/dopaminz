@@ -1,5 +1,6 @@
 "use client";
 
+import { korDate } from "@/lib/kor-date";
 import { useState } from "react";
 import Link from "next/link";
 import { ExternalLink, Info } from "lucide-react";
@@ -48,12 +49,12 @@ export default function MemberList({ members, today }: { members: M[]; today: st
                 {m.mate && <Badge size="small" color="elephant" variant="weak">{m.mate}</Badge>}
                 {days <= NEW_DAYS && <Badge size="xsmall" color="red" variant="fill">N</Badge>}
               </span>
-              <span className="block text-[13px] leading-[19.5px] text-[#6b7684]">가입한지 {days}일 ({m.joined_at})</span>
+              <span className="block text-[13px] leading-[19.5px] text-[#6b7684]">가입한지 {days}일 ({korDate(m.joined_at)})</span>
             </>
           );
           // 링크(<a>) 안에 링크를 넣을 수 없으므로, 클메이트 결과 링크와 인스타그램 링크를 나란히 둔다
           return (
-            <li key={m.id} className="flex items-center gap-4 px-6 py-3">
+            <li key={m.id} className="relative flex items-center gap-4 px-6 py-4 after:absolute after:right-0 after:bottom-0 after:left-6 after:h-px after:bg-[#f2f4f6] last:after:hidden">
               {m.mate ? (
                 <Link href={`/climbmate/result/${m.id}?from=members`} className={`-mx-2 -my-1 min-w-0 flex-1 rounded-lg px-2 py-1 ${press}`}>{body}</Link>
               ) : (
